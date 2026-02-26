@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    protected $table = "users";
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -18,9 +20,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'role',
+        'username',
         'password',
+        'nama_lengkap',
+        'alamat',
+        'tempat_lahir',
+        'tgl_lahir',
+        'no_hp',
+        'email',
     ];
 
     /**
@@ -44,5 +52,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function transaksiPeminjaman()
+    {
+        return $this->hasMany(TransaksiPeminjaman::class);
     }
 }
