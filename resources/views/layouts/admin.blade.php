@@ -23,7 +23,7 @@
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link px-0 align-middle text-white">
+                            <a href="/admin/buku" class="nav-link px-0 align-middle text-white">
                                 <i class="fs-4 bi-book"></i> <span class="ms-1 d-none d-sm-inline">Kelola Buku</span>
                             </a>
                         </li>
