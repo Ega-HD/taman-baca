@@ -19,9 +19,29 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/">Katalog Buku</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Login</a>
-                    </li>
+                    @guest
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="/login">Login</a>
+                        </li>
+                    @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                Halo, {{ Auth::user()->nama_lengkap }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin')
+                                    <li><a class="dropdown-item" href="/admin/dashboard">Panel Admin</a></li>
+                                @endif
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/logout" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endguest
                 </ul>
             </div>
         </div>
