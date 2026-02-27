@@ -4,48 +4,95 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Buku;
+use App\Models\ItemBuku;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; // Tambahkan ini untuk transaksi
 
 class AdminBukuController extends Controller
 {
-    // Menampilkan daftar buku (Read)
+    // Menampilkan daftar katalog buku
     public function index()
     {
-        // Mengambil semua data buku, diurutkan dari yang terbaru
-        $buku = Buku::orderBy('id', 'desc')->get();
+        // Mengambil buku beserta relasi item fisiknya untuk menghitung stok
+        $buku = Buku::with('itemBuku')->orderBy('id', 'desc')->get();
         return view('admin.buku.index', compact('buku'));
     }
 
-    // Menampilkan form tambah buku (Create)
+    // Menampilkan form tambah buku
     public function create()
     {
         return view('admin.buku.create');
     }
 
-    // Memproses data dari form ke database (Store)
+    // Memproses data form
     public function store(Request $request)
     {
-        // Validasi inputan admin
+        // 1. Validasi inputan admin
         $request->validate([
             'judul_buku' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'penerbit' => 'required|string|max:255',
+            'tahun_terbit' => 'required|numeric',
             'asal_buku' => 'required|in:Baru,Donasi',
-            'penulis' => 'nullable|string|max:255',
-            'penerbit' => 'nullable|string|max:255',
-            'tahun_terbit' => 'nullable|numeric',
+            'jumlah_buku' => 'required|integer|min:1',
         ]);
 
-        // Simpan ke database
-        Buku::create([
-            'judul_buku' => $request->judul_buku,
-            'tgl_ditambahkan' => Carbon::now(), // Tanggal otomatis hari ini
-            'status_buku' => 'Tersedia', // Default selalu Tersedia saat baru ditambah
-            'asal_buku' => $request->asal_buku,
-            'penulis' => $request->penulis,
-            'penerbit' => $request->penerbit,
-            'tahun_terbit' => $request->tahun_terbit,
-        ]);
+        // 2. Gunakan Database Transaction
+        DB::beginTransaction();
+        
+        try {
+            // A. Simpan ke tabel `buku` (Katalog Induk)
+            $katalogBuku = Buku::create([
+                'judul_buku' => $request->judul_buku,
+                'penulis' => $request->penulis,
+                'penerbit' => $request->penerbit,
+                'tahun_terbit' => $request->tahun_terbit,
+            ]);
 
-        // Kembalikan ke halaman daftar buku dengan pesan sukses
-        return redirect('/admin/buku')->with('success', 'Buku berhasil ditambahkan ke dalam sistem!');
+            // B. Cari kode buku terakhir di tabel item_buku
+            $lastItem = ItemBuku::orderBy('id', 'desc')->first();
+            $lastNumber = 0; // Default jika tabel masih kosong
+
+            if ($lastItem) {
+                // Ambil string kode terakhir (contoh: "PAUD-023")
+                $lastCode = $lastItem->kode_buku; 
+                
+                // Pecah string berdasarkan tanda hubung '-'
+                $parts = explode('-', $lastCode); 
+                
+                // Ambil bagian angkanya saja dan jadikan tipe data integer
+                if (count($parts) == 2) {
+                    $lastNumber = (int) $parts[1];
+                }
+            }
+
+            // C. Simpan ke tabel `item_buku` (Salinan Fisik) melalui looping
+            for ($i = 0; $i < $request->jumlah_buku; $i++) {
+                
+                // Tambahkan 1 ke angka terakhir untuk setiap salinan baru
+                $lastNumber++;
+                
+                // Format ulang menjadi string dengan 3 digit (contoh: 1 menjadi "001")
+                // Jika angkanya tembus 1000, str_pad otomatis menyesuaikan jadi 4 digit
+                $kodeUnik = 'PAUD-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+
+                ItemBuku::create([
+                    'buku_id' => $katalogBuku->id, 
+                    'kode_buku' => $kodeUnik,
+                    'status_buku' => 'Tersedia', 
+                    'asal_buku' => $request->asal_buku,
+                    'tgl_ditambahkan' => Carbon::now(),
+                ]);
+            }
+
+            // Jika semua lancar, simpan permanen ke database
+            DB::commit();
+
+            return redirect('/admin/buku')->with('success', 'Katalog dan ' . $request->jumlah_buku . ' salinan fisik buku berhasil ditambahkan!');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()])->withInput();
+        }
     }
 }

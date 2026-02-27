@@ -8,8 +8,8 @@
         <div class="col-md-4">
             <div class="card text-white bg-primary shadow-sm border-0 rounded-3">
                 <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-book"></i> Total Buku</h5>
-                    <h1 class="display-5 fw-bold">{{ $totalBuku }}</h1>
+                    <h5 class="card-title"><i class="bi bi-book"></i> Total Katalog</h5>
+                    <h1 class="display-5 fw-bold">{{ $totalKatalog }}</h1>
                 </div>
             </div>
         </div>
