@@ -9,10 +9,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Mengambil semua data buku dari database
-        $buku = Buku::all(); 
+        // Mengambil semua katalog buku, beserta relasi item fisiknya (menggunakan Eloquent with)
+        // Asumsinya kamu sudah membuat relasi hasMany('App\Models\ItemBuku') di Model Buku
+        $buku = Buku::with('itemBuku')->get(); 
         
-        // Mengirim data $buku ke view bernama 'beranda'
         return view('beranda', compact('buku'));
     }
 }
