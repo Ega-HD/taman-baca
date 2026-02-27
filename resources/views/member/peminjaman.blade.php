@@ -36,14 +36,14 @@
                             <span class="badge bg-dark">{{ $item->itemBuku->kode_buku }}</span>
                         </td>
                         <td>
-                            <span class="badge {{ $item->status == 'Sedang Dipinjam' ? 'bg-warning text-dark' : ($item->status == 'dikembalikan' ? 'bg-success' : 'bg-secondary') }}">
+                            <span class="badge {{ $item->status == 'Sedang Dipinjam' ? 'bg-warning text-dark' : ($item->status == 'Dikembalikan' ? 'bg-success' : 'bg-secondary') }}">
                                 {{ $item->status }}
                             </span>
                         </td>
                         <td>
-                            <small class="text-muted d-block">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y') }}</small>
+                            <small class="text-muted d-block">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
                             @if($item->status != 'Menunggu Persetujuan')
-                                <small class="text-success d-block">Dipinjam: {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y') }}</small>
+                                <small class="text-success d-block">Dipinjam: {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y, H:i') }} WIB</small>
                                 @if($item->status != 'Dikembalikan')
                                     <small class="text-danger fw-bold d-block mt-1">Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</small>
                                 @else

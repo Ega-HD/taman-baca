@@ -34,7 +34,7 @@ class AdminTransaksiController extends Controller
                 'admin_id' => Auth::id(), // Siapa admin yang menyetujui
                 'tgl_disetujui' => Carbon::now(), // Kapan disetujui
                 'tgl_pinjam' => Carbon::now(), // Argo peminjaman dimulai
-                'deadline' => Carbon::now()->addDays(-7), // Batas waktu 7 hari
+                'deadline' => Carbon::now()->addDays(7), // Batas waktu 7 hari
                 'status' => 'Sedang Dipinjam'
             ]);
 

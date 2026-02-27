@@ -51,12 +51,12 @@
                             </td>
                             
                             <td>
-                                <small class="text-muted">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }}</small><br>
+                                <small class="text-muted">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small><br>
                                 
                                 @if($item->status == 'Menunggu Persetujuan')
                                     <small class="text-warning fw-bold"><i class="bi bi-hourglass-split"></i> Belum disetujui</small>
                                 @else
-                                    <small class="text-success"><i class="bi bi-check2-all"></i> Di-ACC: {{ \Carbon\Carbon::parse($item->tgl_disetujui)->format('d M Y') }}</small><br>
+                                    <small class="text-success"><i class="bi bi-check2-all"></i> Di-ACC: {{ \Carbon\Carbon::parse($item->tgl_disetujui)->format('d M Y, H:i') }} WIB</small><br>
                                     <small class="text-muted">Oleh: <strong>{{ $item->admin->nama_lengkap ?? 'Admin' }}</strong></small><br>
                                     <span class="text-danger fw-bold mt-1 d-block"><i class="bi bi-calendar-x"></i> Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</span>
                                 @endif
