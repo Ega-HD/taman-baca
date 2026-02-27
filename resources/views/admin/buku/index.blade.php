@@ -24,40 +24,44 @@
                         <tr>
                             <th>No</th>
                             <th>Judul Buku</th>
-                            <th>Penulis</th>
-                            <th>Asal Buku</th>
-                            <th>Status</th>
-                            <th>Tgl Masuk</th>
+                            <th>Penulis & Penerbit</th>
+                            <th>Tahun</th>
+                            <th>Total Stok (Fisik)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($buku as $index => $item)
+                        @forelse($buku as $index => $katalog)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td class="fw-bold">{{ $item->judul_buku }}</td>
-                            <td>{{ $item->penulis ?? '-' }}</td>
+                            <td class="fw-bold">{{ $katalog->judul_buku }}</td>
                             <td>
-                                <span class="badge bg-secondary">{{ $item->asal_buku }}</span>
+                                <small>Penulis: {{ $katalog->penulis }}</small><br>
+                                <small class="text-muted">Penerbit: {{ $katalog->penerbit }}</small>
                             </td>
+                            <td>{{ $katalog->tahun_terbit }}</td>
                             <td>
-                                <span class="badge {{ $item->status_buku == 'Tersedia' ? 'bg-success' : 'bg-warning text-dark' }}">
-                                    {{ $item->status_buku }}
+                                <span class="badge bg-info text-dark fs-6">
+                                    {{ $katalog->itemBuku->count() }} Buku
                                 </span>
+                                <br>
+                                <small class="text-muted">
+                                    {{ $katalog->itemBuku->where('status_buku', 'Tersedia')->count() }} Tersedia
+                                </small>
                             </td>
-                            <td>{{ \Carbon\Carbon::parse($item->tgl_ditambahkan)->format('d M Y') }}</td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                <a href="/admin/buku/{{ $katalog->id }}" class="btn btn-sm btn-info text-white mb-1" title="Lihat Daftar Kode Buku Fisik"><i class="bi bi-eye"></i></a>
+                                <a href="#" class="btn btn-sm btn-warning mb-1"><i class="bi bi-pencil"></i></a>
                                 <form action="#" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus buku ini?')"><i class="bi bi-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Menghapus katalog ini akan menghapus semua salinan fisik bukunya. Lanjutkan?')"><i class="bi bi-trash"></i></button>
                                 </form>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">Belum ada data buku.</td>
+                            <td colspan="6" class="text-center text-muted py-4">Belum ada data buku.</td>
                         </tr>
                         @endforelse
                     </tbody>

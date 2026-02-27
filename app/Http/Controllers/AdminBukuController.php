@@ -95,4 +95,61 @@ class AdminBukuController extends Controller
             return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()])->withInput();
         }
     }
+
+    // Menampilkan halaman detail buku
+    public function show($id)
+    {
+        // Ambil data buku berdasarkan ID, sekalian bawa relasi item_buku-nya
+        $buku = Buku::with('itemBuku')->findOrFail($id);
+        
+        return view('admin.buku.show', compact('buku'));
+    }
+
+    // Memproses penambahan salinan fisik baru ke katalog existing
+    public function storeFisik(Request $request, $id)
+    {
+        $request->validate([
+            'jumlah_buku' => 'required|integer|min:1',
+            'asal_buku' => 'required|in:Baru,Donasi',
+        ]);
+
+        // Pastikan katalog bukunya ada
+        $buku = Buku::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
+            // Logika auto-increment kode unik (sama seperti saat create awal)
+            $lastItem = ItemBuku::orderBy('id', 'desc')->first();
+            $lastNumber = 0;
+
+            if ($lastItem) {
+                $lastCode = $lastItem->kode_buku;
+                $parts = explode('-', $lastCode);
+                if (count($parts) == 2) {
+                    $lastNumber = (int) $parts[1];
+                }
+            }
+
+            // Looping sebanyak jumlah buku fisik yang ditambahkan
+            for ($i = 0; $i < $request->jumlah_buku; $i++) {
+                $lastNumber++;
+                $kodeUnik = 'PAUD-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+
+                ItemBuku::create([
+                    'buku_id' => $buku->id, // Menggunakan ID dari parameter URL
+                    'kode_buku' => $kodeUnik,
+                    'status_buku' => 'Tersedia',
+                    'asal_buku' => $request->asal_buku,
+                    'tgl_ditambahkan' => Carbon::now(),
+                ]);
+            }
+
+            DB::commit();
+            return back()->with('success', $request->jumlah_buku . ' salinan fisik baru berhasil ditambahkan ke katalog ini!');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Gagal menambah buku fisik: ' . $e->getMessage()]);
+        }
+    }
 }
