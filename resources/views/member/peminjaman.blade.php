@@ -62,7 +62,14 @@
                         <td class="fw-bold">
                             @if($item->status == 'Dikembalikan')
                                 @if($item->total_denda > 0)
-                                    <span class="text-danger">Rp {{ number_format($item->total_denda, 0, ',', '.') }}</span>
+                                    <small class="text-danger d-block mb-1">Terlambat: {{ $item->hari_telat }} hari</small>
+                                    
+                                    @if($item->tgl_pelunasan)
+                                        <span class="text-success"><del>Rp {{ number_format($item->total_denda, 0, ',', '.') }}</del> <br>
+                                        <i class="bi bi-check-circle-fill"></i> Lunas pada {{ \Carbon\Carbon::parse($item->tgl_pelunasan)->format('d M Y, H:i') }} WIB</span>
+                                    @else
+                                        <span class="text-danger">Rp {{ number_format($item->total_denda, 0, ',', '.') }}</span>
+                                    @endif
                                 @else
                                     <span class="text-success">Rp 0 (Tepat Waktu)</span>
                                 @endif

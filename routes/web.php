@@ -34,6 +34,7 @@ use App\Http\Controllers\AdminTransaksiController;
         Route::get('/admin/transaksi', [AdminTransaksiController::class, 'index']);
         Route::post('/admin/transaksi/{id}/setujui', [AdminTransaksiController::class, 'setujui']); // Route ACC
         Route::post('/admin/transaksi/{id}/kembali', [AdminTransaksiController::class, 'kembalikan']);
+        Route::post('/admin/transaksi/{id}/lunas', [AdminTransaksiController::class, 'lunasi']);
     });
 
 // Menampilkan detail katalog dan daftar fisik buku

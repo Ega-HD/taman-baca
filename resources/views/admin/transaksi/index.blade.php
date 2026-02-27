@@ -65,6 +65,18 @@
                             <td>
                                 @if($item->status == 'Menunggu Persetujuan')
                                     <span class="badge bg-secondary">Menunggu ACC</span>
+                                @elseif($item->status == 'Dikembalikan')
+                                    <span class="badge bg-success mb-1">Sudah Kembali</span><br>
+                                    <small class="text-success fw-bold"><i class="bi bi-check-circle"></i> Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
+                                    @if($item->total_denda > 0)
+                                        <small class="text-danger d-block mb-1">Terlambat: {{ $item->hari_telat }} hari</small>
+                                        
+                                        @if($item->tgl_pelunasan) 
+                                            <small class="text-success fw-bold"><i class="bi bi-check-circle"></i> Lunas: {{ \Carbon\Carbon::parse($item->tgl_pelunasan)->format('d M Y, H:i') }} WIB</small>
+                                        @else
+                                            <small class="text-danger fw-bold">Denda: Rp {{ number_format($item->total_denda, 0, ',', '.') }}</small>
+                                        @endif
+                                    @endif
                                 @elseif($isLate)
                                     <span class="badge bg-danger mb-1">Terlambat {{ (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay()) }} hari</span><br>
                                     <small class="text-danger fw-bold">Denda berjalan!</small>
@@ -86,6 +98,13 @@
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-primary fw-bold w-100" onclick="return confirm('Proses pengembalian buku ini?')">
                                             <i class="bi bi-arrow-return-left"></i> Dikembalikan
+                                        </button>
+                                    </form>
+                                @elseif($item->status == 'Dikembalikan' && $item->total_denda > 0 && !$item->tgl_pelunasan)
+                                    <form action="/admin/transaksi/{{ $item->id }}/lunas" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-warning fw-bold w-100" onclick="return confirm('Konfirmasi bahwa pengunjung telah membayar denda?')">
+                                            <i class="bi bi-cash"></i> Lunasi Denda
                                         </button>
                                     </form>
                                 @endif

@@ -22,6 +22,7 @@ class TransaksiPeminjaman extends Model
         'tgl_kembali',
         'hari_telat',
         'total_denda',
+        'tgl_pelunasan',
         'status',
     ];
 

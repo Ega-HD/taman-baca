@@ -16,7 +16,7 @@ class AdminTransaksiController extends Controller
     {
         // Ambil data transaksi beserta nama peminjam dan detail buku fisiknya
         $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku', 'admin'])
-                        ->whereIn('status', ['Menunggu Persetujuan', 'Sedang Dipinjam'])
+                        ->whereIn('status', ['Menunggu Persetujuan', 'Sedang Dipinjam', 'Dikembalikan'])
                         ->orderBy('deadline', 'asc') // Urutkan dari deadline yang paling dekat/lewat
                         ->get();
 
@@ -100,5 +100,16 @@ class AdminTransaksiController extends Controller
             DB::rollBack();
             return back()->withErrors(['error' => 'Gagal memproses pengembalian: ' . $e->getMessage()]);
         }
+    }
+
+    public function lunasi(Request $request, $id)
+    {
+        $transaksi = TransaksiPeminjaman::findOrFail($id);
+        
+        $transaksi->update([
+            'tgl_pelunasan' => Carbon::now() // Mengisi waktu pelunasan
+        ]);
+
+        return back()->with('success', 'Tagihan denda berhasil dilunasi!');
     }
 }
