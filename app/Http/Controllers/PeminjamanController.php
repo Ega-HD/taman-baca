@@ -44,22 +44,21 @@ class PeminjamanController extends Controller
                 return back()->with('error', 'Mohon maaf, stok buku ini baru saja habis dipinjam.');
             }
 
-            // 3. Ubah status fisik buku menjadi 'Dipinjam'
+            // 3. Ubah status fisik buku supaya tidak bentrok bersamaan dipinjam
             $fisikBuku->update([
-                'status_buku' => 'Dipinjam'
+                'status_buku' => 'Di-booking'
             ]);
 
             // 4. Catat ke tabel transaksi_peminjaman (Misal: Deadline 7 hari dari sekarang)
             TransaksiPeminjaman::create([
                 'user_id' => Auth::id(),
                 'item_buku_id' => $fisikBuku->id, // Yang dicatat kode fisiknya!
-                'tgl_pinjam' => Carbon::now(),
-                'deadline' => Carbon::now()->addDays(14), // Atur masa pinjam (contoh: 7 hari)
-                'status' => 'Sedang Dipinjam',
+                'tgl_pengajuan' => Carbon::now(),
+                'status' => 'Menunggu Persetujuan',
             ]);
 
             DB::commit();
-            return redirect('/member/peminjaman')->with('success', 'Berhasil meminjam buku! Silakan ambil fisik buku di admin Taman Baca dengan menyebutkan Kode Buku.');
+            return redirect('/member/peminjaman')->with('success', 'Permintaan peminjaman terkirim! Silakan tunggu persetujuan Admin.');
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -50,8 +50,10 @@
                             </span>
                         </td>
                         <td>
-                            @if($item->status == 'Selesai')
+                            @if($item->status == 'Dikembalikan')
                                 Rp {{ number_format($item->total_denda, 0, ',', '.') }}
+                            @elseif($item->status == 'Menunggu Persetujuan')
+                                <small class="text-muted">Menunggu Admin</small>
                             @else
                                 -
                             @endif

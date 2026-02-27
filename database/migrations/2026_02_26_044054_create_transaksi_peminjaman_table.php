@@ -15,14 +15,18 @@ return new class extends Migration
             $table->id();
             // Relasi ke tabel users dan buku
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('item_buku_id')->constrained('item_buku')->onDelete('cascade');
             
-            $table->date('tgl_pinjam');
-            $table->date('deadline');
+            $table->dateTime('tgl_pengajuan')->useCurrent(); // Otomatis terisi saat request dibuat
+            $table->dateTime('tgl_disetujui')->nullable(); // Kosong sampai di-ACC admin
+
+            $table->date('tgl_pinjam')->nullable();
+            $table->date('deadline')->nullable();
             $table->date('tgl_kembali')->nullable(); // Nullable karena saat dipinjam belum ada tgl kembali
             $table->integer('hari_telat')->default(0);
             $table->integer('total_denda')->default(0);
-            $table->enum('status', ['Sedang Dipinjam', 'Selesai'])->default('Sedang Dipinjam');
+            $table->enum('status', ['Menunggu Persetujuan','Sedang Dipinjam', 'Dikembalikan'])->default('Menunggu Persetujuan');
             $table->timestamps();
         });
     }

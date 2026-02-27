@@ -28,7 +28,7 @@
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link px-0 align-middle text-white">
+                            <a href="/admin/transaksi" class="nav-link px-0 align-middle text-white">
                                 <i class="fs-4 bi-arrow-left-right"></i> <span class="ms-1 d-none d-sm-inline">Transaksi</span>
                             </a>
                         </li>

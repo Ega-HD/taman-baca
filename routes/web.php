@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminDashboardController; // Tambahkan ini di atas
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminBukuController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\AdminTransaksiController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
     Route::get('/', [HomeController::class, 'index']);
@@ -28,6 +29,11 @@ use App\Http\Controllers\PeminjamanController;
         Route::get('/admin/buku', [AdminBukuController::class, 'index']);
         Route::get('/admin/buku/create', [AdminBukuController::class, 'create']);
         Route::post('/admin/buku', [AdminBukuController::class, 'store']);
+
+        // Kelola Transaksi (Peminjaman & Pengembalian)
+        Route::get('/admin/transaksi', [AdminTransaksiController::class, 'index']);
+        Route::post('/admin/transaksi/{id}/setujui', [AdminTransaksiController::class, 'setujui']); // Route ACC
+        Route::post('/admin/transaksi/{id}/kembali', [AdminTransaksiController::class, 'kembalikan']);
     });
 
 // Menampilkan detail katalog dan daftar fisik buku
