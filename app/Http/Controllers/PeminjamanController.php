@@ -16,7 +16,7 @@ class PeminjamanController extends Controller
     public function index()
     {
         // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
-        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku'])
+        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'admin'])
                         ->where('user_id', Auth::id())
                         ->orderBy('id', 'desc')
                         ->get();

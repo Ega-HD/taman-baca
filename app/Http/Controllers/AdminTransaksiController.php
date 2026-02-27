@@ -15,7 +15,7 @@ class AdminTransaksiController extends Controller
     public function index()
     {
         // Ambil data transaksi beserta nama peminjam dan detail buku fisiknya
-        $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku'])
+        $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku', 'admin'])
                         ->whereIn('status', ['Menunggu Persetujuan', 'Sedang Dipinjam'])
                         ->orderBy('deadline', 'asc') // Urutkan dari deadline yang paling dekat/lewat
                         ->get();
