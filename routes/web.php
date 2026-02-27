@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController; // Panggil Controller-nya
 use App\Http\Controllers\AdminDashboardController; // Tambahkan ini di atas
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminBukuController;
+use App\Http\Controllers\PeminjamanController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
     Route::get('/', [HomeController::class, 'index']);
@@ -13,6 +14,7 @@ use App\Http\Controllers\AdminBukuController;
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AuthController::class, 'login']);
     });
+
 // Route untuk Admin Dashboard
 // Area Authenticated (Harus login dulu)
     Route::middleware('auth')->group(function () {
@@ -31,5 +33,9 @@ use App\Http\Controllers\AdminBukuController;
 // Menampilkan detail katalog dan daftar fisik buku
     Route::get('/admin/buku/{id}', [AdminBukuController::class, 'show']);
     
-    // Memproses penambahan fisik buku ke katalog yang sudah ada
+// Memproses penambahan fisik buku ke katalog yang sudah ada
     Route::post('/admin/buku/{id}/tambah-fisik', [AdminBukuController::class, 'storeFisik']);
+
+// Route khusus Member (Pengunjung)
+    Route::get('/member/peminjaman', [PeminjamanController::class, 'index']);
+    Route::post('/member/pinjam/{katalog_id}', [PeminjamanController::class, 'store']);

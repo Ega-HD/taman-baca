@@ -8,6 +8,19 @@
     </div>
 </div>
 
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="row g-4">
     @foreach($buku as $katalog)
     @php
@@ -40,9 +53,18 @@
             @auth
                 @if(Auth::user()->role == 'pengunjung')
                     <div class="card-footer bg-white border-0 pb-3">
-                        <button class="btn btn-outline-primary w-100 btn-sm" {{ $stokTersedia == 0 ? 'disabled' : '' }}>
-                            {{ $stokTersedia > 0 ? 'Pinjam Buku Ini' : 'Stok Kosong' }}
-                        </button>
+                        @if($stokTersedia > 0)
+                            <form action="/member/pinjam/{{ $katalog->id }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100 btn-sm fw-bold" onclick="return confirm('Pinjam buku {{ $katalog->judul_buku }} sekarang?')">
+                                    Pinjam Buku Ini
+                                </button>
+                            </form>
+                        @else
+                            <button class="btn btn-secondary w-100 btn-sm" disabled>
+                                Stok Kosong
+                            </button>
+                        @endif
                     </div>
                 @endif
             @endauth

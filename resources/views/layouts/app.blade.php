@@ -32,6 +32,11 @@
                                 @if(Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin')
                                     <li><a class="dropdown-item" href="/admin/dashboard">Panel Admin</a></li>
                                 @endif
+                                
+                                @if(Auth::user()->role == 'pengunjung')
+                                    <li><a class="dropdown-item" href="/member/peminjaman">Buku Saya (Peminjaman)</a></li>
+                                @endif
+                                
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="/logout" method="POST">
