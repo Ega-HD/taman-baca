@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             // Relasi ke tabel users dan buku
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('buku_id')->constrained('buku')->onDelete('cascade');
+            $table->foreignId('item_buku_id')->constrained('item_buku')->onDelete('cascade');
             
             $table->date('tgl_pinjam');
             $table->date('deadline');
