@@ -9,22 +9,19 @@ class Buku extends Model
 {
     use HasFactory;
 
-    // Beritahu Laravel nama tabel pastinya, agar tidak otomatis mencari tabel "bukus"
     protected $table = 'buku'; 
 
+    // Kolom ini wajib diisi dan tidak boleh kosong sesuai kebutuhanmu
     protected $fillable = [
         'judul_buku',
-        'tgl_ditambahkan',
-        'status_buku',
-        'asal_buku',
         'penulis',
         'penerbit',
         'tahun_terbit',
     ];
 
-    // Relasi ke transaksi: 1 buku bisa ada di banyak riwayat transaksi
-    public function transaksiPeminjaman()
+    // Relasi: 1 Katalog Buku memiliki Banyak Item (Fisik) Buku
+    public function itemBuku()
     {
-        return $this->hasMany(TransaksiPeminjaman::class);
+        return $this->hasMany(ItemBuku::class);
     }
 }

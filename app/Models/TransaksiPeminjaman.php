@@ -13,7 +13,7 @@ class TransaksiPeminjaman extends Model
 
     protected $fillable = [
         'user_id',
-        'buku_id',
+        'item_buku_id',
         'tgl_pinjam',
         'deadline',
         'tgl_kembali',
@@ -29,8 +29,8 @@ class TransaksiPeminjaman extends Model
     }
 
     // Relasi ke Buku: Transaksi ini meminjam 1 buku spesifik
-    public function buku()
+    public function itemBuku()
     {
-        return $this->belongsTo(Buku::class);
+        return $this->belongsTo(ItemBuku::class);
     }
 }
