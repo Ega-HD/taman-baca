@@ -35,14 +35,15 @@ use App\Http\Controllers\AdminTransaksiController;
         Route::post('/admin/transaksi/{id}/setujui', [AdminTransaksiController::class, 'setujui']); // Route ACC
         Route::post('/admin/transaksi/{id}/kembali', [AdminTransaksiController::class, 'kembalikan']);
         Route::post('/admin/transaksi/{id}/lunas', [AdminTransaksiController::class, 'lunasi']);
+        
+        // Menampilkan detail katalog dan daftar fisik buku
+        Route::get('/admin/buku/{id}', [AdminBukuController::class, 'show']);
+        // Memproses penambahan fisik buku ke katalog yang sudah ada
+        Route::post('/admin/buku/{id}/tambah-fisik', [AdminBukuController::class, 'storeFisik']);
+        
+        // Route khusus Member (Pengunjung)
+        Route::get('/member/peminjaman', [PeminjamanController::class, 'index']);
+        Route::post('/member/pinjam/{katalog_id}', [PeminjamanController::class, 'store']);
+        Route::post('/member/peminjaman/{id}/ajukan-kembali', [PeminjamanController::class, 'ajukanKembali']);
     });
 
-// Menampilkan detail katalog dan daftar fisik buku
-    Route::get('/admin/buku/{id}', [AdminBukuController::class, 'show']);
-    
-// Memproses penambahan fisik buku ke katalog yang sudah ada
-    Route::post('/admin/buku/{id}/tambah-fisik', [AdminBukuController::class, 'storeFisik']);
-
-// Route khusus Member (Pengunjung)
-    Route::get('/member/peminjaman', [PeminjamanController::class, 'index']);
-    Route::post('/member/pinjam/{katalog_id}', [PeminjamanController::class, 'store']);

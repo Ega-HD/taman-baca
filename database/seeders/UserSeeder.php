@@ -11,14 +11,14 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Akun Super Admin
-        User::create([
-            'role' => 'super_admin',
-            'username' => 'superadmin',
-            'password' => Hash::make('password123'), // Password akan di-enkripsi
-            'nama_lengkap' => 'Super Administrator',
-            'no_hp' => '081234567890',
-        ]);
+        // // 1. Akun Super Admin
+        // User::create([
+        //     'role' => 'super_admin',
+        //     'username' => 'superadmin',
+        //     'password' => Hash::make('password123'), // Password akan di-enkripsi
+        //     'nama_lengkap' => 'Super Administrator',
+        //     'no_hp' => '081234567890',
+        // ]);
 
         // 2. Akun Admin Biasa
         User::create([
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         // 3. Akun Pengunjung (Member)
         User::create([
             'role' => 'pengunjung',
-            'username' => 'pengunjung1',
+            'username' => 'p',
             'password' => Hash::make('password123'),
             'nama_lengkap' => 'Siswa Assyfa',
             'alamat' => 'Jl. Pendidikan No. 1',

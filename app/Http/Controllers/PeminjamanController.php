@@ -64,5 +64,20 @@ class PeminjamanController extends Controller
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
+
+    }
+    
+    // Memproses pengajuan pengembalian oleh member
+    public function ajukanKembali($id)
+    {
+        $transaksi = TransaksiPeminjaman::where('id', $id)
+                        ->where('user_id', Auth::id()) // Pastikan hanya miliknya
+                        ->firstOrFail();
+
+        $transaksi->update([
+            'status' => 'Menunggu Pengembalian'
+        ]);
+
+        return back()->with('success', 'Pengajuan pengembalian terkirim! Silakan bawa fisik buku ke Admin.');
     }
 }

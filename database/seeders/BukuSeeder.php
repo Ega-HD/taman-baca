@@ -29,15 +29,33 @@ class BukuSeeder extends Seeder
         // Ambil semua ID dari 23 buku yang baru saja dibuat
         $katalogBukuIds = Buku::pluck('id')->toArray();
 
+
         // 2. GENERATE 50 SALINAN FISIK BUKU (ITEM BUKU)
         for ($j = 1; $j <= 50; $j++) {
             
+            $buku_id = $faker->randomElement($katalogBukuIds);    
+            
+            $lastItem = ItemBuku::where('buku_id', $buku_id)->orderBy('id', 'desc')->first();
+            $lastNumber = 0;
+    
+            if($lastItem) {
+                $lastCode = $lastItem->kode_buku;
+    
+                $parts = explode('-', $lastCode);
+    
+                if (count($parts) == 3) {
+                    $lastNumber = (int) $parts[2];
+                }
+            }
+
+            $lastNumber++;
+
             // Membuat kode buku berurutan dan unik: PAUD-001, PAUD-002, dst.
-            $kodeBuku = 'PAUD-' . str_pad($j, 3, '0', STR_PAD_LEFT);
+            $kodeBuku = 'PAUD-'. str_pad($buku_id, 3, '0', STR_PAD_LEFT) . '-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
 
             ItemBuku::create([
                 // Memilih ID secara acak dari 23 katalog buku yang ada
-                'buku_id' => $faker->randomElement($katalogBukuIds),
+                'buku_id' => $buku_id,
                 'kode_buku' => $kodeBuku,
                 'status_buku' => $faker->randomElement(['Tersedia', 'Dipinjam']),
                 'asal_buku' => $faker->randomElement(['Baru', 'Donasi']),

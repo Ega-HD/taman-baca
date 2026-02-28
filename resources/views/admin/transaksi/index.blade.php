@@ -64,24 +64,34 @@
                             
                             <td>
                                 @if($item->status == 'Menunggu Persetujuan')
-                                    <span class="badge bg-secondary">Menunggu ACC</span>
+                                    <span class="badge bg-secondary">Menunggu ACC Pinjam</span>
+                                
+                                @elseif($item->status == 'Sedang Dipinjam')
+                                    <span class="badge bg-info text-dark mb-1"><i class="bi bi-book"></i> Sedang Dipinjam</span><br>
+                                    <small class="text-muted">Belum diajukan kembali</small>
+                                
+                                @elseif($item->status == 'Menunggu Pengembalian')
+                                    <span class="badge bg-warning text-dark mb-1"><i class="bi bi-bell-fill"></i> Diajukan Kembali</span><br>
+                                    <small class="text-primary fw-bold">Menunggu Proses Anda</small>
+                                
                                 @elseif($item->status == 'Dikembalikan')
-                                    <span class="badge bg-success mb-1">Sudah Kembali</span><br>
-                                    <small class="text-success fw-bold"><i class="bi bi-check-circle"></i> Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
+                                    <small class="text-muted d-block mb-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y, H:i') }}</small>
+                                    
                                     @if($item->total_denda > 0)
                                         <small class="text-danger d-block mb-1">Terlambat: {{ $item->hari_telat }} hari</small>
-                                        
                                         @if($item->tgl_pelunasan) 
-                                            <small class="text-success fw-bold"><i class="bi bi-check-circle"></i> Lunas: {{ \Carbon\Carbon::parse($item->tgl_pelunasan)->format('d M Y, H:i') }} WIB</small>
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
                                         @else
                                             <small class="text-danger fw-bold">Denda: Rp {{ number_format($item->total_denda, 0, ',', '.') }}</small>
                                         @endif
+                                    @else
+                                        <small class="text-success fw-bold d-block mb-1"><i class="bi bi-check-lg"></i> Tepat Waktu</small>
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
                                     @endif
+                                    
                                 @elseif($isLate)
                                     <span class="badge bg-danger mb-1">Terlambat {{ (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay()) }} hari</span><br>
                                     <small class="text-danger fw-bold">Denda berjalan!</small>
-                                @else
-                                    <span class="badge bg-success">Aman</span>
                                 @endif
                             </td>
                             
@@ -90,20 +100,22 @@
                                     <form action="/admin/transaksi/{{ $item->id }}/setujui" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success fw-bold w-100" onclick="return confirm('Setujui peminjaman ini?')">
-                                            <i class="bi bi-check-lg"></i> Setujui
+                                            <i class="bi bi-check-lg"></i> Setujui Pinjam
                                         </button>
                                     </form>
-                                @elseif($item->status == 'Sedang Dipinjam')
+                                
+                                @elseif($item->status == 'Menunggu Pengembalian' || $item->status == 'Sedang Dipinjam')
                                     <form action="/admin/transaksi/{{ $item->id }}/kembali" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-primary fw-bold w-100" onclick="return confirm('Proses pengembalian buku ini?')">
-                                            <i class="bi bi-arrow-return-left"></i> Dikembalikan
+                                        <button type="submit" class="btn btn-sm {{ $item->status == 'Menunggu Pengembalian' ? 'btn-primary' : 'btn-outline-secondary' }} fw-bold w-100" onclick="return confirm('Terima fisik buku dan proses pengembalian?')">
+                                            <i class="bi bi-arrow-return-left"></i> Terima Buku
                                         </button>
                                     </form>
+                                
                                 @elseif($item->status == 'Dikembalikan' && $item->total_denda > 0 && !$item->tgl_pelunasan)
                                     <form action="/admin/transaksi/{{ $item->id }}/lunas" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-warning fw-bold w-100" onclick="return confirm('Konfirmasi bahwa pengunjung telah membayar denda?')">
+                                        <button type="submit" class="btn btn-sm btn-warning fw-bold w-100" onclick="return confirm('Konfirmasi pelunasan denda?')">
                                             <i class="bi bi-cash"></i> Lunasi Denda
                                         </button>
                                     </form>

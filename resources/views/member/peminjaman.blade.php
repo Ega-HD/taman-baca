@@ -31,15 +31,30 @@
                 <tbody>
                     @forelse($transaksi as $item)
                     <tr>
+
                         <td class="ps-4">
                             <span class="fw-bold d-block mb-1">{{ $item->itemBuku->buku->judul_buku }}</span>
                             <span class="badge bg-dark">{{ $item->itemBuku->kode_buku }}</span>
                         </td>
+
                         <td>
-                            <span class="badge {{ $item->status == 'Sedang Dipinjam' ? 'bg-warning text-dark' : ($item->status == 'Dikembalikan' ? 'bg-success' : 'bg-secondary') }}">
+                            <span class="badge {{ 
+                                $item->status == 'Sedang Dipinjam' ? 'bg-primary' : 
+                                ($item->status == 'Menunggu Pengembalian' ? 'bg-warning text-dark' : 
+                                ($item->status == 'Dikembalikan' ? 'bg-success' : 'bg-secondary')) 
+                            }} mb-2 d-inline-block">
                                 {{ $item->status }}
                             </span>
+                            @if($item->status == 'Sedang Dipinjam')
+                                <form action="/member/peminjaman/{{ $item->id }}/ajukan-kembali" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-primary" onclick="return confirm('Ajukan pengembalian buku ini sekarang?')">
+                                        <i class="bi bi-box-arrow-in-right"></i> Kembalikan Buku
+                                    </button>
+                                </form>
+                            @endif
                         </td>
+                        
                         <td>
                             <small class="text-muted d-block">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
                             @if($item->status != 'Menunggu Persetujuan')

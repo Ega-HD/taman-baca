@@ -11,24 +11,27 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">Taman Baca Assyfa</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-toggle="navbarNav">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="/">Katalog Buku</a>
                     </li>
+                    
                     @guest
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="/login">Login</a>
+                            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-lg-2 mt-2 mt-lg-0" href="/login">Login</a>
                         </li>
                     @else
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <li class="nav-item dropdown mt-2 mt-lg-0">
+                            <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Halo, {{ Auth::user()->nama_lengkap }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 @if(Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin')
                                     <li><a class="dropdown-item" href="/admin/dashboard">Panel Admin</a></li>
                                 @endif

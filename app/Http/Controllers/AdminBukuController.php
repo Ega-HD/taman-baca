@@ -50,7 +50,7 @@ class AdminBukuController extends Controller
             ]);
 
             // B. Cari kode buku terakhir di tabel item_buku
-            $lastItem = ItemBuku::orderBy('id', 'desc')->first();
+            $lastItem = ItemBuku::where('buku_id', $katalogBuku->id)->orderBy('id', 'desc')->first();
             $lastNumber = 0; // Default jika tabel masih kosong
 
             if ($lastItem) {
@@ -61,8 +61,8 @@ class AdminBukuController extends Controller
                 $parts = explode('-', $lastCode); 
                 
                 // Ambil bagian angkanya saja dan jadikan tipe data integer
-                if (count($parts) == 2) {
-                    $lastNumber = (int) $parts[1];
+                if (count($parts) == 3) {
+                    $lastNumber = (int) $parts[2];
                 }
             }
 
@@ -74,7 +74,7 @@ class AdminBukuController extends Controller
                 
                 // Format ulang menjadi string dengan 3 digit (contoh: 1 menjadi "001")
                 // Jika angkanya tembus 1000, str_pad otomatis menyesuaikan jadi 4 digit
-                $kodeUnik = 'PAUD-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+                $kodeUnik = 'PAUD-'. str_pad($katalogBuku->id, 3, '0', STR_PAD_LEFT) . '-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
 
                 ItemBuku::create([
                     'buku_id' => $katalogBuku->id, 
@@ -119,21 +119,21 @@ class AdminBukuController extends Controller
         DB::beginTransaction();
         try {
             // Logika auto-increment kode unik (sama seperti saat create awal)
-            $lastItem = ItemBuku::orderBy('id', 'desc')->first();
+            $lastItem = ItemBuku::where('buku_id', $id)->orderBy('id', 'desc')->first();
             $lastNumber = 0;
 
             if ($lastItem) {
                 $lastCode = $lastItem->kode_buku;
                 $parts = explode('-', $lastCode);
-                if (count($parts) == 2) {
-                    $lastNumber = (int) $parts[1];
+                if (count($parts) == 3) {
+                    $lastNumber = (int) $parts[2];
                 }
             }
 
             // Looping sebanyak jumlah buku fisik yang ditambahkan
             for ($i = 0; $i < $request->jumlah_buku; $i++) {
                 $lastNumber++;
-                $kodeUnik = 'PAUD-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+                $kodeUnik = 'PAUD-' . $id . '-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
 
                 ItemBuku::create([
                     'buku_id' => $buku->id, // Menggunakan ID dari parameter URL

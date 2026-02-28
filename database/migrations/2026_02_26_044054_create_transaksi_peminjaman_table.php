@@ -27,7 +27,12 @@ return new class extends Migration
             $table->integer('hari_telat')->default(0);
             $table->integer('total_denda')->default(0);
             $table->dateTime('tgl_pelunasan')->nullable();
-            $table->enum('status', ['Menunggu Persetujuan','Sedang Dipinjam', 'Dikembalikan'])->default('Menunggu Persetujuan');
+            $table->enum('status', [
+                'Menunggu Persetujuan',
+                'Sedang Dipinjam', 
+                'Menunggu Pengembalian', 
+                'Dikembalikan'
+            ])->default('Menunggu Persetujuan');
             $table->timestamps();
         });
     }
