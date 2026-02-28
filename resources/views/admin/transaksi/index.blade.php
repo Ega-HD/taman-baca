@@ -128,7 +128,7 @@
                                 @elseif($item->status == 'Dikembalikan')
                                     @if($item->total_denda > 0)
                                         @if($item->tgl_pelunasan)
-                                            <span class="badge bg-success mb-1"><i class="bi bi-bell-fill"></i> Dikembalikan</span><br>  
+                                            <span class="text-success fw-bold mb-1">Dikembalikan <i class="bi bi-check-lg"></i></span><br>  
                                         @else
                                             <span class="badge bg-warning text-dark mb-1"><i class="bi bi-bell-fill"></i> Dikembalikan</span><br>                                    
                                         @endif

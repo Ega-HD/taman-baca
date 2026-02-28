@@ -29,7 +29,7 @@
                 </form>
                 
                 <div class="text-center mt-3">
-                    <small>Belum punya akun? <a href="#" class="text-decoration-none">Daftar di sini</a></small>
+                    <small>Belum punya akun? <a href="/register" class="text-decoration-none fw-bold">Daftar di sini</a></small>
                 </div>
             </div>
         </div>

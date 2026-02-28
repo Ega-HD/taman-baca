@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminBukuController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AdminTransaksiController;
 use App\Http\Controllers\AdminPengaturanController;
+use App\Http\Controllers\RegisterController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
     Route::get('/', [HomeController::class, 'index']);
@@ -15,6 +16,9 @@ use App\Http\Controllers\AdminPengaturanController;
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AuthController::class, 'login']);
+
+        Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [RegisterController::class, 'register']);
     });
 
 // Route untuk Admin Dashboard
