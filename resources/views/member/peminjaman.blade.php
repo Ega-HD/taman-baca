@@ -92,9 +92,9 @@
 
                         {{-- Diterima Kembali --}}
                         <td>
-                            @if($item->status == 'Menunggu Pengembalian' || $item->status == 'Dikembalikan')
+                            @if($item->status == 'Menunggu Pengembalian')
                                 <small class="text-muted fst-italic">Menunggu Admin</small>
-                            @else
+                            @elseif($item->status == 'Dikembalikan')
                                 <span class="fw-bold">{{ $item->adminPengembalian->nama_lengkap ?? '-' }}</span><br>
                                 <small class="text-muted">Admin PAUD</small>
                             @endif

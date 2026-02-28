@@ -42,12 +42,13 @@
                                 <small class="text-muted"><i class="bi bi-telephone"></i> {{ $item->user->no_hp }}</small>
                             </td>
                             
+                            {{-- Buku & Kode Fisik --}}
                             <td>
                                 <span class="fw-bold text-primary">{{ $item->itemBuku->buku->judul_buku }}</span><br>
                                 <span class="badge bg-dark mt-1"><i class="bi bi-upc-scan"></i> {{ $item->itemBuku->kode_buku }}</span>
                             </td>
                             
-                            {{-- Buku & Kode Fisik --}}
+                            {{-- Detail Waktu dan Persetujuan --}}
                             <td>
                                 <small class="text-muted">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small><br>
                                 
@@ -71,8 +72,8 @@
                                 @endif
                             </td>
                             
-                            {{-- Detail Waktu dan Persetujuan --}}
-                            <td>
+                            {{-- Status dan Denda --}}
+                            <td class="text-center">
                                 @php
                                     $sekarang = \Carbon\Carbon::now();
                                     $dendaBerjalan = 0;
@@ -104,7 +105,7 @@
                                     @else
                                         <span class="badge bg-success">Aman</span>
                                     @endif
-                                
+                                    
                                 @elseif($item->status == 'Menunggu Pengembalian')
                                     <span class="badge bg-warning text-dark mb-1"><i class="bi bi-bell-fill"></i> Diajukan Kembali</span><br>
                                     <small class="text-primary fw-bold">Menunggu Proses Anda</small><br>
@@ -117,16 +118,25 @@
                                     @else
                                         <span class="badge bg-success">Aman</span>
                                     @endif
-                                
-                                @elseif($item->status == 'Dikembalikan')
-                                    <small class="text-muted d-block mb-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y, H:i') }}</small>
                                     
+                                {{-- @elseif($item->status == 'Menunggu Pengembalian')
+                                    <div class="mt-2 text-primary small">
+                                        <i class="bi bi-clock-history"></i> Diajukan: <br>
+                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
+                                    </div> --}}
+
+                                @elseif($item->status == 'Dikembalikan')
                                     @if($item->total_denda > 0)
+                                        @if($item->tgl_pelunasan)
+                                            <span class="badge bg-success mb-1"><i class="bi bi-bell-fill"></i> Dikembalikan</span><br>  
+                                        @else
+                                            <span class="badge bg-warning text-dark mb-1"><i class="bi bi-bell-fill"></i> Dikembalikan</span><br>                                    
+                                        @endif
                                         <small class="text-danger d-block mb-1">Terlambat: {{ $item->hari_telat }} hari</small>
                                         <small class="text-danger fw-bold">
                                             Estimasi Denda: Rp {{ number_format($item->total_denda, 0, ',', '.') }}
                                         </small>
-                                        <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($tarifDenda,0) }}/hari)</div>
+                                        <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($item->tarif_denda_berlaku,0) }}/hari)</div>
 
                                         @if($item->tgl_pelunasan) 
                                             <span class="text-success"><del>Rp {{ number_format($item->total_denda, 0, ',', '.') }}</del></span>
@@ -137,11 +147,6 @@
                                         <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
                                     @endif
                                 
-                                @elseif($item->status == 'Menunggu Pengembalian')
-                                    <div class="mt-2 text-primary small">
-                                        <i class="bi bi-clock-history"></i> Diajukan: <br>
-                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }}
-                                    </div>
                                 {{-- @elseif($isLate)
                                     <span class="badge bg-danger mb-1">Terlambat {{ (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay()) }} hari</span><br>
                                     <small class="text-danger fw-bold">Denda berjalan!</small> --}}

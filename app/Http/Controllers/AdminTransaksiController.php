@@ -87,7 +87,7 @@ class AdminTransaksiController extends Controller
                 $transaksi->update([
                     'tgl_kembali' => $tgl_kembali_aktual,
                     'hari_telat' => $hari_telat,
-                    'tarif_denda_berlaku' => $tarif_denda,
+                    // 'tarif_denda_berlaku' => $tarif_denda,
                     'admin_pengembalian_id' => Auth::id(),
                     'total_denda' => $total_denda,
                     'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
@@ -98,7 +98,7 @@ class AdminTransaksiController extends Controller
                     'tgl_pengajuan_kembali' => Carbon::now(),
                     'tgl_kembali' => $tgl_kembali_aktual,
                     'hari_telat' => $hari_telat,
-                    'tarif_denda_berlaku' => $tarif_denda,
+                    // 'tarif_denda_berlaku' => $tarif_denda,
                     'admin_pengembalian_id' => Auth::id(),
                     'total_denda' => $total_denda,
                     'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
