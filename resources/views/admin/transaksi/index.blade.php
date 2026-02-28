@@ -54,10 +54,12 @@
                                 @else
                                     <small class="text-success"><i class="bi bi-check2-all"></i> Di-ACC: {{ \Carbon\Carbon::parse($item->tgl_disetujui)->format('d M Y, H:i') }} WIB</small><br>
                                     <small class="text-muted">Oleh: <strong>{{ $item->admin->nama_lengkap ?? 'Admin' }}</strong></small><br>
-                                    <small class="text-primary">
-                                        <i class="bi bi-clock-history"></i> Diajukan kembali:
-                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
-                                    </small>
+                                    @if($item->status != 'Sedang Dipinjam')
+                                        <small class="text-primary">
+                                            <i class="bi bi-clock-history"></i> Diajukan kembali:
+                                            {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
+                                        </small>
+                                    @endif
                                     <span class="text-danger fw-bold mt-1 d-block"><i class="bi bi-calendar-x"></i> Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</span>
                                 @endif
                             </td>
@@ -112,10 +114,13 @@
                                     
                                     @if($item->total_denda > 0)
                                         <small class="text-danger d-block mb-1">Terlambat: {{ $item->hari_telat }} hari</small>
+                                        <small class="text-danger fw-bold">
+                                            Estimasi Denda: Rp {{ number_format($item->total_denda, 0, ',', '.') }}
+                                        </small>
+                                        <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($tarifDenda,0) }}/hari)</div>
+
                                         @if($item->tgl_pelunasan) 
                                             <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
-                                        @else
-                                            <small class="text-danger fw-bold">Denda: Rp {{ number_format($item->total_denda, 0, ',', '.') }}</small>
                                         @endif
                                     @else
                                         <small class="text-success fw-bold d-block mb-1"><i class="bi bi-check-lg"></i> Tepat Waktu</small>

@@ -63,7 +63,7 @@ class AdminTransaksiController extends Controller
         $transaksi = TransaksiPeminjaman::findOrFail($id);
         
         // Tarif denda per hari keterlambatan (Misal: Rp 1.000)
-        $tarif_denda = 1000; 
+        $tarif_denda = Pengaturan::first()->denda_per_hari ?? 1000;
         
         $tgl_kembali_aktual = Carbon::now();
         $deadline = Carbon::parse($transaksi->deadline);
@@ -78,15 +78,28 @@ class AdminTransaksiController extends Controller
             $total_denda = $hari_telat * $tarif_denda;
         }
 
+        
         DB::beginTransaction();
         try {
+
+            if ($transaksi->tgl_pengajuan_kembali) {
+                $transaksi->update([
+                    'tgl_kembali' => $tgl_kembali_aktual,
+                    'hari_telat' => $hari_telat,
+                    'total_denda' => $total_denda,
+                    'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
+                ]);
+            }
+            else {
+                $transaksi->update([
+                    'tgl_pengajuan_kembali' => Carbon::now(),
+                    'tgl_kembali' => $tgl_kembali_aktual,
+                    'hari_telat' => $hari_telat,
+                    'total_denda' => $total_denda,
+                    'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
+                ]);
+            }
             // 1. Update data transaksi
-            $transaksi->update([
-                'tgl_kembali' => $tgl_kembali_aktual,
-                'hari_telat' => $hari_telat,
-                'total_denda' => $total_denda,
-                'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
-            ]);
 
             // 2. Bebaskan fisik buku agar statusnya kembali 'Tersedia'
             ItemBuku::where('id', $transaksi->item_buku_id)->update([
