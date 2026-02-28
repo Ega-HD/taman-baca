@@ -33,7 +33,7 @@ class AdminBukuController extends Controller
             'penulis' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|numeric',
-            'asal_buku' => 'required|in:Baru,Donasi',
+            // 'asal_buku' => 'required|in:Baru,Donasi',
             'jumlah_buku' => 'required|integer|min:1',
         ]);
 
@@ -80,7 +80,7 @@ class AdminBukuController extends Controller
                     'buku_id' => $katalogBuku->id, 
                     'kode_buku' => $kodeUnik,
                     'status_buku' => 'Tersedia', 
-                    'asal_buku' => $request->asal_buku,
+                    // 'asal_buku' => $request->asal_buku,
                     'tgl_ditambahkan' => Carbon::now(),
                 ]);
             }
@@ -110,7 +110,7 @@ class AdminBukuController extends Controller
     {
         $request->validate([
             'jumlah_buku' => 'required|integer|min:1',
-            'asal_buku' => 'required|in:Baru,Donasi',
+            // 'asal_buku' => 'required|in:Baru,Donasi',
         ]);
 
         // Pastikan katalog bukunya ada
@@ -133,13 +133,13 @@ class AdminBukuController extends Controller
             // Looping sebanyak jumlah buku fisik yang ditambahkan
             for ($i = 0; $i < $request->jumlah_buku; $i++) {
                 $lastNumber++;
-                $kodeUnik = 'PAUD-' . $id . '-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+                $kodeUnik = 'PAUD-' . str_pad($id, 3, '0', STR_PAD_LEFT) . '-' . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
 
                 ItemBuku::create([
                     'buku_id' => $buku->id, // Menggunakan ID dari parameter URL
                     'kode_buku' => $kodeUnik,
                     'status_buku' => 'Tersedia',
-                    'asal_buku' => $request->asal_buku,
+                    // 'asal_buku' => $request->asal_buku,
                     'tgl_ditambahkan' => Carbon::now(),
                 ]);
             }

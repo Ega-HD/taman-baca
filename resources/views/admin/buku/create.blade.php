@@ -17,13 +17,6 @@
                         <label class="form-label fw-bold">Judul Buku <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="judul_buku" required>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Asal Buku <span class="text-danger">*</span></label>
-                        <select class="form-select" name="asal_buku" required>
-                            <option value="Baru">Pengadaan Baru (Beli)</option>
-                            <option value="Donasi">Hasil Donasi</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="row mb-4">

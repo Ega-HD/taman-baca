@@ -15,10 +15,8 @@ class AdminTransaksiController extends Controller
     // Menampilkan daftar semua transaksi yang sedang aktif (belum dikembalikan)
     public function index()
     {
-        $tarifDenda = Pengaturan::first()->denda_per_hari ?? 1000;
-
         // Ambil data transaksi beserta nama peminjam dan detail buku fisiknya
-        $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku', 'admin'])
+        $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku', 'admin', 'adminPengembalian'])
                         ->whereIn('status', [
                             'Menunggu Persetujuan', 
                             'Sedang Dipinjam', 
@@ -27,11 +25,13 @@ class AdminTransaksiController extends Controller
                         ->orderBy('deadline', 'asc') // Urutkan dari deadline yang paling dekat/lewat
                         ->get();
 
-        return view('admin.transaksi.index', compact('transaksi', 'tarifDenda'));
+        return view('admin.transaksi.index', compact('transaksi'));
     }
 
     public function setujui($id)
     {
+        $tarifDenda = Pengaturan::first()->denda_per_hari ?? 1000;
+
         $transaksi = TransaksiPeminjaman::findOrFail($id);
 
         DB::beginTransaction();
@@ -41,7 +41,8 @@ class AdminTransaksiController extends Controller
                 'admin_id' => Auth::id(), // Siapa admin yang menyetujui
                 'tgl_disetujui' => Carbon::now(), // Kapan disetujui
                 'tgl_pinjam' => Carbon::now(), // Argo peminjaman dimulai
-                'deadline' => Carbon::now()->addDays(7), // Batas waktu 7 hari
+                'tarif_denda_berlaku' => $tarifDenda,
+                'deadline' => Carbon::now()->addDays(-7), // Batas waktu 7 hari
                 'status' => 'Sedang Dipinjam'
             ]);
 
@@ -63,7 +64,7 @@ class AdminTransaksiController extends Controller
         $transaksi = TransaksiPeminjaman::findOrFail($id);
         
         // Tarif denda per hari keterlambatan (Misal: Rp 1.000)
-        $tarif_denda = Pengaturan::first()->denda_per_hari ?? 1000;
+        $tarif_denda = $transaksi->tarif_denda_berlaku;
         
         $tgl_kembali_aktual = Carbon::now();
         $deadline = Carbon::parse($transaksi->deadline);
@@ -86,6 +87,8 @@ class AdminTransaksiController extends Controller
                 $transaksi->update([
                     'tgl_kembali' => $tgl_kembali_aktual,
                     'hari_telat' => $hari_telat,
+                    'tarif_denda_berlaku' => $tarif_denda,
+                    'admin_pengembalian_id' => Auth::id(),
                     'total_denda' => $total_denda,
                     'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
                 ]);
@@ -95,6 +98,8 @@ class AdminTransaksiController extends Controller
                     'tgl_pengajuan_kembali' => Carbon::now(),
                     'tgl_kembali' => $tgl_kembali_aktual,
                     'hari_telat' => $hari_telat,
+                    'tarif_denda_berlaku' => $tarif_denda,
+                    'admin_pengembalian_id' => Auth::id(),
                     'total_denda' => $total_denda,
                     'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
                 ]);

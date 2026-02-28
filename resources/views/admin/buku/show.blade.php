@@ -45,7 +45,6 @@
                         <tr>
                             <th>No</th>
                             <th>Kode Buku Unik</th>
-                            <th>Asal Buku</th>
                             <th>Status Peminjaman</th>
                             <th>Tgl Masuk</th>
                             <th>Aksi</th>
@@ -56,7 +55,6 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td><span class="badge bg-dark fs-6">{{ $item->kode_buku }}</span></td>
-                            <td>{{ $item->asal_buku }}</td>
                             <td>
                                 <span class="badge {{ $item->status_buku == 'Tersedia' ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $item->status_buku }}
@@ -96,13 +94,13 @@
                         <input type="number" class="form-control" name="jumlah_buku" min="1" value="1" required>
                     </div>
                     
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label class="form-label fw-bold">Asal Buku <span class="text-danger">*</span></label>
                         <select class="form-select" name="asal_buku" required>
                             <option value="Baru">Pengadaan Baru (Beli)</option>
                             <option value="Donasi">Hasil Donasi</option>
                         </select>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

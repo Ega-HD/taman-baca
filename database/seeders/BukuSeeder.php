@@ -58,7 +58,7 @@ class BukuSeeder extends Seeder
                 'buku_id' => $buku_id,
                 'kode_buku' => $kodeBuku,
                 'status_buku' => $faker->randomElement(['Tersedia', 'Dipinjam']),
-                'asal_buku' => $faker->randomElement(['Baru', 'Donasi']),
+                // 'asal_buku' => $faker->randomElement(['Baru', 'Donasi']),
                 'tgl_ditambahkan' => Carbon::now()->subDays(rand(1, 60)), // Tanggal masuk acak dalam 60 hari terakhir
             ]);
         }

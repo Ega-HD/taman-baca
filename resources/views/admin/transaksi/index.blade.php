@@ -34,8 +34,9 @@
                         @forelse($transaksi as $key => $item)
                         <tr>
                             <td>
-                                {{ ($key++) + 1 }}
+                                {{ $key + 1 }}
                             </td>
+                            {{-- Peminjam --}}
                             <td>
                                 <span class="fw-bold">{{ $item->user->nama_lengkap }}</span><br>
                                 <small class="text-muted"><i class="bi bi-telephone"></i> {{ $item->user->no_hp }}</small>
@@ -46,6 +47,7 @@
                                 <span class="badge bg-dark mt-1"><i class="bi bi-upc-scan"></i> {{ $item->itemBuku->kode_buku }}</span>
                             </td>
                             
+                            {{-- Buku & Kode Fisik --}}
                             <td>
                                 <small class="text-muted">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small><br>
                                 
@@ -58,20 +60,27 @@
                                         <small class="text-primary">
                                             <i class="bi bi-clock-history"></i> Diajukan kembali:
                                             {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
-                                        </small>
+                                        </small><br>
+                                        @if($item->status != 'Menunggu Pengembalian')
+                                            <small class="fw-bold text-primary"><i class="bi bi-box-arrow-in-down"></i> Diterima Kembali: 
+                                            {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y, H:i') }} WIB</small><br>
+                                            <small class="text-muted">Oleh: <strong>{{ $item->adminPengembalian->nama_lengkap ?? 'Admin' }}</strong></small><br>
+                                        @endif
                                     @endif
                                     <span class="text-danger fw-bold mt-1 d-block"><i class="bi bi-calendar-x"></i> Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</span>
                                 @endif
                             </td>
                             
+                            {{-- Detail Waktu dan Persetujuan --}}
                             <td>
                                 @php
                                     $sekarang = \Carbon\Carbon::now();
                                     $dendaBerjalan = 0;
                                     $hariTerlambat = 0;
-
+                                    
                                     // Jika transaksi belum selesai (masih dipinjam/menunggu kembali) DAN sudah lewat deadline
                                     if (in_array($item->status, ['Sedang Dipinjam', 'Menunggu Pengembalian']) && $item->deadline) {
+                                        $tarifDenda = $item->tarif_denda_berlaku;
                                         $deadline = \Carbon\Carbon::parse($item->deadline);
                                         if ($sekarang->startOfDay()->gt($deadline->startOfDay())) {
                                             $hariTerlambat = (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay());
@@ -139,6 +148,7 @@
                                 @endif
                             </td>
                             
+                            {{-- Aksi --}}
                             <td>
                                 @if($item->status == 'Menunggu Persetujuan')
                                     <form action="/admin/transaksi/{{ $item->id }}/setujui" method="POST" class="d-inline">

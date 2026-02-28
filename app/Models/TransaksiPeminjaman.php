@@ -14,6 +14,7 @@ class TransaksiPeminjaman extends Model
     protected $fillable = [
         'user_id',
         'admin_id',
+        'admin_pengembalian_id',
         'item_buku_id',
         'tgl_pengajuan',
         'tgl_disetujui',
@@ -21,6 +22,7 @@ class TransaksiPeminjaman extends Model
         'deadline',
         'tgl_kembali',
         'hari_telat',
+        'tarif_denda_berlaku',
         'total_denda',
         'tgl_pelunasan',
         'status',
@@ -41,6 +43,11 @@ class TransaksiPeminjaman extends Model
     // Relasi ke Buku: Transaksi ini meminjam 1 buku spesifik
     public function itemBuku()
     {
-        return $this->belongsTo(ItemBuku::class);
+        return $this->belongsTo(ItemBuku::class, 'item_buku_id', 'id');
+    }
+
+    public function adminPengembalian()
+    {
+        return $this->belongsTo(User::class, 'admin_pengembalian_id');
     }
 }

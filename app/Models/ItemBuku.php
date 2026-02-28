@@ -15,7 +15,6 @@ class ItemBuku extends Model
         'buku_id',
         'kode_buku', // Wajib diisi dan unik
         'status_buku',
-        'asal_buku',
         'tgl_ditambahkan',
     ];
 

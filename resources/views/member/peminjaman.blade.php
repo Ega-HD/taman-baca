@@ -21,22 +21,28 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>No</th>
                         <th class="ps-4">Buku & Kode Fisik</th>
                         <th>Status</th>
                         <th>Riwayat Waktu</th>
-                        <th>Persetujuan</th>
+                        <th>Persetujuan Pinjam</th>
+                        <th>Pengembalian Diterima</th>
                         <th>Tagihan Denda</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($transaksi as $item)
+                    @forelse($transaksi as $index => $item)
                     <tr>
+                        {{-- No --}}
+                        <td>{{ $index + 1 }}</td>
 
+                        {{-- Judul Buku --}}
                         <td class="ps-4">
                             <span class="fw-bold d-block mb-1">{{ $item->itemBuku->buku->judul_buku }}</span>
                             <span class="badge bg-dark">{{ $item->itemBuku->kode_buku }}</span>
                         </td>
 
+                        {{-- Status --}}
                         <td>
                             <span class="badge {{ 
                                 $item->status == 'Sedang Dipinjam' ? 'bg-primary' : 
@@ -55,6 +61,7 @@
                             @endif
                         </td>
 
+                        {{-- Riwayat Waktu --}}
                         <td>
                             <small class="text-muted d-block">Diajukan pinjam: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
                             @if($item->status != 'Menunggu Persetujuan')
@@ -71,14 +78,24 @@
                                     <small class="text-primary fw-bold d-block mt-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
                                 @endif
                             @endif
-
-
                         </td>
+
+                        {{-- Persetujuan Pinjam --}}
                         <td>
                             @if($item->status == 'Menunggu Persetujuan')
                                 <small class="text-muted fst-italic">Menunggu Admin</small>
                             @else
                                 <span class="fw-bold">{{ $item->admin->nama_lengkap ?? '-' }}</span><br>
+                                <small class="text-muted">Admin PAUD</small>
+                            @endif
+                        </td>
+
+                        {{-- Diterima Kembali --}}
+                        <td>
+                            @if($item->status == 'Menunggu Pengembalian' || $item->status == 'Dikembalikan')
+                                <small class="text-muted fst-italic">Menunggu Admin</small>
+                            @else
+                                <span class="fw-bold">{{ $item->adminPengembalian->nama_lengkap ?? '-' }}</span><br>
                                 <small class="text-muted">Admin PAUD</small>
                             @endif
                         </td>
@@ -90,6 +107,7 @@
 
                             // Jika transaksi belum selesai (masih dipinjam/menunggu kembali) DAN sudah lewat deadline
                             if (in_array($item->status, ['Sedang Dipinjam', 'Menunggu Pengembalian']) && $item->deadline) {
+                                $tarifDenda = $item->tarif_denda_berlaku;
                                 $deadline = \Carbon\Carbon::parse($item->deadline);
                                 if ($sekarang->startOfDay()->gt($deadline->startOfDay())) {
                                     $hariTerlambat = (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay());
@@ -98,6 +116,7 @@
                             }
                         @endphp
 
+                        {{-- Tagihan Denda --}}
                         <td class="fw-bold">
                             @if($item->status == 'Dikembalikan')
                                 @if($item->total_denda > 0)

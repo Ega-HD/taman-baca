@@ -16,15 +16,13 @@ class PeminjamanController extends Controller
     // Menampilkan halaman daftar buku yang sedang dipinjam oleh user yang login
     public function index()
     {
-        $tarifDenda = Pengaturan::first()->denda_per_hari ?? 1000;
-
         // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
-        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'admin'])
+        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'admin', 'adminPengembalian'])
                         ->where('user_id', Auth::id())
                         ->orderBy('id', 'desc')
                         ->get();
                         
-        return view('member.peminjaman', compact('transaksi', 'tarifDenda'));
+        return view('member.peminjaman', compact('transaksi'));
     }
 
     // Memproses klik tombol pinjam dari Beranda
