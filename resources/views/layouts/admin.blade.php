@@ -33,8 +33,8 @@
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link px-0 align-middle text-white">
-                                <i class="fs-4 bi-box2-heart"></i> <span class="ms-1 d-none d-sm-inline">Donasi Masuk</span>
+                            <a href="/admin/pengaturan" class="nav-link px-0 align-middle text-white">
+                                <i class="fs-4 bi-box2-heart"></i> <span class="ms-1 d-none d-sm-inline">Tarif Denda</span>
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">

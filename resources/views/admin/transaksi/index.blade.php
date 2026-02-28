@@ -120,6 +120,7 @@
                                         <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($tarifDenda,0) }}/hari)</div>
 
                                         @if($item->tgl_pelunasan) 
+                                            <span class="text-success"><del>Rp {{ number_format($item->total_denda, 0, ',', '.') }}</del></span>
                                             <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
                                         @endif
                                     @else
