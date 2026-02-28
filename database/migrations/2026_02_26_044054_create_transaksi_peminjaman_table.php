@@ -21,9 +21,11 @@ return new class extends Migration
             $table->dateTime('tgl_pengajuan')->useCurrent(); // Otomatis terisi saat request dibuat
             $table->dateTime('tgl_disetujui')->nullable(); // Kosong sampai di-ACC admin
 
-            $table->date('tgl_pinjam')->nullable();
-            $table->date('deadline')->nullable();
-            $table->date('tgl_kembali')->nullable(); // Nullable karena saat dipinjam belum ada tgl kembali
+            $table->dateTime('tgl_pinjam')->nullable();
+            $table->dateTime('deadline')->nullable();
+            
+            $table->dateTime('tgl_pengajuan_kembali')->nullable();
+            $table->dateTime('tgl_kembali')->nullable(); // Nullable karena saat dipinjam belum ada tgl kembali
             $table->integer('hari_telat')->default(0);
             $table->integer('total_denda')->default(0);
             $table->dateTime('tgl_pelunasan')->nullable();

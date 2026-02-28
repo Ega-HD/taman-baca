@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Buku;
 use App\Models\ItemBuku;
 use App\Models\TransaksiPeminjaman;
+use App\Models\Pengaturan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -15,13 +16,15 @@ class PeminjamanController extends Controller
     // Menampilkan halaman daftar buku yang sedang dipinjam oleh user yang login
     public function index()
     {
+        $tarifDenda = Pengaturan::first()->denda_per_hari ?? 1000;
+
         // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
         $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'admin'])
                         ->where('user_id', Auth::id())
                         ->orderBy('id', 'desc')
                         ->get();
                         
-        return view('member.peminjaman', compact('transaksi'));
+        return view('member.peminjaman', compact('transaksi', 'tarifDenda'));
     }
 
     // Memproses klik tombol pinjam dari Beranda
@@ -75,7 +78,8 @@ class PeminjamanController extends Controller
                         ->firstOrFail();
 
         $transaksi->update([
-            'status' => 'Menunggu Pengembalian'
+            'status' => 'Menunggu Pengembalian',
+            'tgl_pengajuan_kembali' => Carbon::now()
         ]);
 
         return back()->with('success', 'Pengajuan pengembalian terkirim! Silakan bawa fisik buku ke Admin.');

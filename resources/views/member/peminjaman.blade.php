@@ -54,17 +54,25 @@
                                 </form>
                             @endif
                         </td>
-                        
+
                         <td>
-                            <small class="text-muted d-block">Diajukan: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
+                            <small class="text-muted d-block">Diajukan pinjam: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
                             @if($item->status != 'Menunggu Persetujuan')
                                 <small class="text-success d-block">Dipinjam: {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y, H:i') }} WIB</small>
+                                @if($item->status != 'Dipinjam')
+                                    <small class="mt-2 text-primary small">
+                                        Diajukan kembali:
+                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
+                                    </small>
+                                @endif
                                 @if($item->status != 'Dikembalikan')
                                     <small class="text-danger fw-bold d-block mt-1">Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</small>
                                 @else
                                     <small class="text-primary fw-bold d-block mt-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
                                 @endif
                             @endif
+
+
                         </td>
                         <td>
                             @if($item->status == 'Menunggu Persetujuan')
@@ -74,6 +82,22 @@
                                 <small class="text-muted">Admin PAUD</small>
                             @endif
                         </td>
+
+                        @php
+                            $sekarang = \Carbon\Carbon::now();
+                            $dendaBerjalan = 0;
+                            $hariTerlambat = 0;
+
+                            // Jika transaksi belum selesai (masih dipinjam/menunggu kembali) DAN sudah lewat deadline
+                            if (in_array($item->status, ['Sedang Dipinjam', 'Menunggu Pengembalian']) && $item->deadline) {
+                                $deadline = \Carbon\Carbon::parse($item->deadline);
+                                if ($sekarang->startOfDay()->gt($deadline->startOfDay())) {
+                                    $hariTerlambat = (int) $deadline->startOfDay()->diffInDays($sekarang->startOfDay());
+                                    $dendaBerjalan = $hariTerlambat * $tarifDenda; // Gunakan tarif dari database
+                                }
+                            }
+                        @endphp
+
                         <td class="fw-bold">
                             @if($item->status == 'Dikembalikan')
                                 @if($item->total_denda > 0)
@@ -90,6 +114,16 @@
                                 @endif
                             @elseif($item->status == 'Menunggu Persetujuan')
                                 <small class="text-muted">-</small>
+                            @elseif ($item->status == 'Sedang Dipinjam' || $item->status == 'Menunggu Pengembalian')
+                                @if($hariTerlambat > 0)
+                                    <span class="badge bg-danger mb-1">Terlambat {{ $hariTerlambat }} Hari</span><br>
+                                    <small class="text-danger fw-bold">
+                                        Estimasi Denda: Rp {{ number_format($dendaBerjalan, 0, ',', '.') }}
+                                    </small>
+                                    <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($tarifDenda,0) }}/hari)</div>
+                                @else
+                                    <small class="text-muted">Belum Selesai</small>
+                                @endif
                             @else
                                 <small class="text-muted">Belum Selesai</small>
                             @endif

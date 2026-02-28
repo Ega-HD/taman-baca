@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TransaksiPeminjaman;
 use App\Models\ItemBuku;
+use App\Models\Pengaturan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,8 @@ class AdminTransaksiController extends Controller
     // Menampilkan daftar semua transaksi yang sedang aktif (belum dikembalikan)
     public function index()
     {
+        $tarifDenda = Pengaturan::first()->denda_per_hari ?? 1000;
+
         // Ambil data transaksi beserta nama peminjam dan detail buku fisiknya
         $transaksi = TransaksiPeminjaman::with(['user', 'itemBuku.buku', 'admin'])
                         ->whereIn('status', [
@@ -24,7 +27,7 @@ class AdminTransaksiController extends Controller
                         ->orderBy('deadline', 'asc') // Urutkan dari deadline yang paling dekat/lewat
                         ->get();
 
-        return view('admin.transaksi.index', compact('transaksi'));
+        return view('admin.transaksi.index', compact('transaksi', 'tarifDenda'));
     }
 
     public function setujui($id)
