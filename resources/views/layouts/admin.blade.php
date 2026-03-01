@@ -43,11 +43,14 @@
                             </a>
                         </li>
                     </ul>
-                    <hr class="w-100 bg-light">
-                    <div class="pb-4">
+                    <div>
                         <a href="/" class="text-white text-decoration-none">
                             <i class="fs-4 bi-box-arrow-left"></i> <span class="d-none d-sm-inline mx-1">Kembali ke Web</span>
                         </a>
+                    </div>
+                    <hr class="w-100 bg-light">
+                    <div class="pb-4">
+                        
                         <form action="/logout" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-danger btn-sm w-100 rounded-pill">
