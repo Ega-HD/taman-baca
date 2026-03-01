@@ -17,7 +17,7 @@ class PeminjamanController extends Controller
     public function index()
     {
         // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
-        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'admin', 'adminPengembalian'])
+        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy', 'updatedBy'])
                         ->where('user_id', Auth::id())
                         ->orderBy('id', 'desc')
                         ->get();
@@ -54,7 +54,7 @@ class PeminjamanController extends Controller
             TransaksiPeminjaman::create([
                 'user_id' => Auth::id(),
                 'item_buku_id' => $fisikBuku->id, // Yang dicatat kode fisiknya!
-                'tgl_pengajuan' => Carbon::now(),
+                'tgl_pengajuan_pinjam' => Carbon::now(),
                 'status' => 'Menunggu Persetujuan',
             ]);
 
@@ -77,7 +77,7 @@ class PeminjamanController extends Controller
 
         $transaksi->update([
             'status' => 'Menunggu Pengembalian',
-            'tgl_pengajuan_kembali' => Carbon::now()
+            'tgl_pengajuan_pengembalian' => Carbon::now()
         ]);
 
         return back()->with('success', 'Pengajuan pengembalian terkirim! Silakan bawa fisik buku ke Admin.');

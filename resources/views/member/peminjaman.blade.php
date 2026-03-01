@@ -25,6 +25,7 @@
                         <th class="ps-4">Buku & Kode Fisik</th>
                         <th>Status</th>
                         <th>Riwayat Waktu</th>
+                        <th>Peminjaman Ditolak</th>
                         <th>Persetujuan Pinjam</th>
                         <th>Pengembalian Diterima</th>
                         <th>Tagihan Denda</th>
@@ -47,7 +48,8 @@
                             <span class="badge {{ 
                                 $item->status == 'Sedang Dipinjam' ? 'bg-primary' : 
                                 ($item->status == 'Menunggu Pengembalian' ? 'bg-warning text-dark' : 
-                                ($item->status == 'Dikembalikan' ? 'bg-success' : 'bg-secondary')) 
+                                ($item->status == 'Dikembalikan' ? 'bg-success' : 
+                                ($item->status == 'Ditolak' ? 'bg-danger' : 'bg-secondary'))) 
                             }} mb-2 d-inline-block">
                                 {{ $item->status }}
                             </span>
@@ -63,13 +65,17 @@
 
                         {{-- Riwayat Waktu --}}
                         <td>
-                            <small class="text-muted d-block">Diajukan pinjam: {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d M Y, H:i') }} WIB</small>
+                            <small class="text-muted d-block">Diajukan pinjam: {{ \Carbon\Carbon::parse($item->tgl_pengajuan_pinjam)->format('d M Y, H:i') }} WIB</small>
+                            @if ($item->status == 'Ditolak')
+                                <span class="badge bg-danger">Ditolak </span>
+                                <small class="text-muted">: {{ \Carbon\Carbon::parse($item->tgl_ditolak)->format('d/m/y H:i') }} WIB</small><br>
+                            @endif
                             @if($item->status != 'Menunggu Persetujuan')
                                 <small class="text-success d-block">Dipinjam: {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y, H:i') }} WIB</small>
                                 @if($item->status != 'Dipinjam')
                                     <small class="mt-2 text-primary small">
                                         Diajukan kembali:
-                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_kembali)->format('d M Y, H:i') }} WIB
+                                        {{ \Carbon\Carbon::parse($item->tgl_pengajuan_pengembalian)->format('d M Y, H:i') }} WIB
                                     </small>
                                 @endif
                                 @if($item->status != 'Dikembalikan')
@@ -79,28 +85,44 @@
                                 @endif
                             @endif
                         </td>
-
+                            
+                        {{-- Peminjaman Ditolak --}}
+                        <td>
+                            @if ($item->status == 'Ditolak')
+                                <small class="text-danger">{{ $item->rejectedBy->nama_lengkap ?? 'Admin' }}</small><br>
+                                <small class="text-muted">Admin PAUD</small>
+                            @else
+                                <span> - </span>
+                            @endif
+                        </td>
+                        
                         {{-- Persetujuan Pinjam --}}
                         <td>
                             @if($item->status == 'Menunggu Persetujuan')
                                 <small class="text-muted fst-italic">Menunggu Admin</small>
-                            @else
-                                <span class="fw-bold">{{ $item->admin->nama_lengkap ?? '-' }}</span><br>
+                            @elseif($item->status != 'Ditolak')
+                                <span class="fw-bold">{{ $item->approvedBy->nama_lengkap ?? '-' }}</span><br>
                                 <small class="text-muted">Admin PAUD</small>
+                            @else
+                                <span> - </span>
                             @endif
                         </td>
 
                         {{-- Diterima Kembali --}}
                         <td>
-                            @if($item->status == 'Menunggu Persetujuan' || $item->status == 'Sedang Dipinjam')
+                            @if($item->status == 'Menunggu Persetujuan' || $item->status == 'Sedang Dipinjam' && $item->status != 'Ditolak')
                                 <span> - </span>
                             @elseif($item->status == 'Menunggu Pengembalian')
                                 <small class="text-muted fst-italic">Menunggu Admin</small>
                             @elseif($item->status == 'Dikembalikan')
-                                <span class="fw-bold">{{ $item->adminPengembalian->nama_lengkap ?? '-' }}</span><br>
+                                <span class="fw-bold">{{ $item->retrievedBy->nama_lengkap ?? '-' }}</span><br>
                                 <small class="text-muted">Admin PAUD</small>
+                            @else
+                                <span> - </span>
                             @endif
                         </td>
+
+
 
                         @php
                             $sekarang = \Carbon\Carbon::now();
@@ -128,7 +150,8 @@
                                         <span class="text-success"><del>Rp {{ number_format($item->total_denda, 0, ',', '.') }}</del> <br>
                                         <i class="bi bi-check-circle-fill"></i> Lunas pada {{ \Carbon\Carbon::parse($item->tgl_pelunasan)->format('d M Y, H:i') }} WIB</span>
                                     @else
-                                        <span class="text-danger">Rp {{ number_format($item->total_denda, 0, ',', '.') }}</span>
+                                        <span class="text-danger">Rp {{ number_format($item->total_denda, 0, ',', '.') }}</span><br>
+                                        <span class="text-danger">Belum Dibayarkan</span>
                                     @endif
                                 @else
                                     <span class="text-success">Rp 0 (Tepat Waktu)</span>
@@ -146,7 +169,7 @@
                                     <small class="text-muted">Belum Selesai</small>
                                 @endif
                             @else
-                                <small class="text-muted">Belum Selesai</small>
+                                <small class="text-muted"> - </small>
                             @endif
                         </td>
                     </tr>

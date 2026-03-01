@@ -45,6 +45,11 @@ use App\Http\Controllers\RegisterController;
         Route::post('/admin/transaksi/{id}/setujui', [AdminTransaksiController::class, 'setujui']); // Route ACC
         Route::post('/admin/transaksi/{id}/kembali', [AdminTransaksiController::class, 'kembalikan']);
         Route::post('/admin/transaksi/{id}/lunas', [AdminTransaksiController::class, 'lunasi']);
+
+        // Fitur Tolak
+        Route::post('/admin/transaksi/{id}/tolak', [AdminTransaksiController::class, 'tolak']);
+        // Fitur Edit (Update)
+        Route::put('/admin/transaksi/{id}', [AdminTransaksiController::class, 'update']);
         
 
             // Pengaturan Denda

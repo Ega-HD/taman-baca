@@ -13,18 +13,25 @@ class TransaksiPeminjaman extends Model
 
     protected $fillable = [
         'user_id',
-        'admin_id',
-        'admin_pengembalian_id',
         'item_buku_id',
-        'tgl_pengajuan',
+
+        'approved_by_id',
+        'retrieved_by_id',
+        'rejected_by_id',
+        'updated_by_id',
+
+        'tgl_pengajuan_pinjam',
         'tgl_disetujui',
+        'tgl_ditolak',
+        'tgl_diupdate',
         'tgl_pinjam',
         'deadline',
         'tgl_kembali',
+        'tgl_pelunasan',
+
         'hari_telat',
         'tarif_denda_berlaku',
         'total_denda',
-        'tgl_pelunasan',
         'status',
     ];
 
@@ -35,9 +42,9 @@ class TransaksiPeminjaman extends Model
     }
 
     // Relasi BARU untuk siapa yang menyetujui (Admin)
-    public function admin()
+    public function approvedBy()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class, 'approved_by_id');
     }
 
     // Relasi ke Buku: Transaksi ini meminjam 1 buku spesifik
@@ -46,8 +53,18 @@ class TransaksiPeminjaman extends Model
         return $this->belongsTo(ItemBuku::class, 'item_buku_id', 'id');
     }
 
-    public function adminPengembalian()
+    public function retrievedBy()
     {
-        return $this->belongsTo(User::class, 'admin_pengembalian_id');
+        return $this->belongsTo(User::class, 'retrieved_by_id');
+    }
+
+    public function rejectedBy() 
+    { 
+        return $this->belongsTo(User::class, 'rejected_by_id'); 
+    }
+    
+    public function updatedBy() 
+    { 
+        return $this->belongsTo(User::class, 'updated_by_id'); 
     }
 }
