@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('item_buku', function (Blueprint $table) {
             $table->id();
             $table->foreignId('buku_id')->constrained('buku')->onDelete('cascade'); // Relasi ke katalog
-            $table->string('kode_buku')->unique(); // Contoh: PAUD-001, PAUD-002
+            $table->string('kode_buku')->unique(); // Contoh: PAUD-001-001, PAUD-002-001
             $table->enum('status_buku', ['Tersedia', 'Di-booking', 'Dipinjam'])->default('Tersedia');
             // $table->enum('asal_buku', ['Baru', 'Donasi']);
             $table->dateTime('tgl_ditambahkan');
