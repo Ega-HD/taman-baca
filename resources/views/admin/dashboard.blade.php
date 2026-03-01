@@ -31,6 +31,15 @@
                 </div>
             </div>
         </div>
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-secondary shadow-sm border-0 rounded-3">
+                <div class="card-body text-white">
+                    <h5 class="card-title"><i class="bi bi-arrow-left-right"></i> Antrian Pengembalian</h5>
+                    <h1 class="display-5 fw-bold">{{ $bukuPengembalian }}</h1>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">

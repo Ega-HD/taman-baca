@@ -9,6 +9,15 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-4">
@@ -64,7 +73,14 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Password Baru</label>
                                 <input type="password" name="password" class="form-control" placeholder="Minimal 6 karakter">
+                                
+                                @error('password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
+                            
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Ulangi Password Baru</label>
                                 <input type="password" name="password_confirmation" class="form-control">

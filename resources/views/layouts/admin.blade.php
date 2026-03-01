@@ -39,7 +39,7 @@
                         </li>
                         <li class="nav-item w-100 mb-2">
                             <a href="/admin/members" class="nav-link px-0 align-middle text-white {{ Request::is('admin/members*') ? 'active bg-secondary' : '' }}">
-                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Member</span>
+                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Kelola Akun</span>
                             </a>
                         </li>
                     </ul>

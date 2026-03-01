@@ -22,6 +22,15 @@
                         <input type="text" name="no_hp" class="form-control" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tipe Akun (Role)</label>
+                    <select name="role" class="form-select" required>
+                        <option value="" selected disabled>-- Pilih Role --</option>
+                        <option value="member">Member (Peminjam)</option>
+                        <option value="admin">Admin (Pengelola)</option>
+                    </select>
+                    <small class="text-muted">Admin memiliki akses penuh ke sistem, Member hanya bisa meminjam.</small>
+                </div>
                 <div class="mb-4">
                     <label class="form-label fw-bold">Password Awal</label>
                     <input type="text" name="password" class="form-control" placeholder="Minimal 6 karakter" required>

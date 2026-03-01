@@ -10,24 +10,65 @@ use Illuminate\Validation\Rule;
 class AdminMemberController extends Controller
 {
     // 1. TAMPILKAN DAFTAR MEMBER
-    public function index()
+    public function index(Request $request)
     {
-        // Hanya ambil user dengan role 'member'
-        // Kita hitung juga berapa buku yang sedang dipinjam
-        $members = User::where('role', 'member')
-                    ->withCount(['transaksiPeminjaman as sedang_dipinjam' => function($query){
-                        $query->whereIn('status', ['Menunggu Persetujuan', 'Sedang Dipinjam', 'Menunggu Pengembalian']);
-                    }])
-                    ->orderBy('id', 'desc')
-                    ->get();
+        $perPage = $request->input('per_page', 10);
 
-        return view('admin.member.index', compact('members'));
+        $list_role = User::select('role')
+                        ->distinct()
+                        ->orderBy('id', 'asc')
+                        ->pluck('role');
+
+        // 2. MULAI QUERY
+        $query = User::select('*')
+                     ->withCount(['transaksiPeminjaman as sedang_dipinjam' => function($query){
+                         $query->whereIn('status', ['Menunggu Persetujuan', 'Sedang Dipinjam', 'Menunggu Pengembalian']);
+                     }])
+                     ->orderBy('role', 'asc');
+
+        // A. Logika Search (Nama, Username, No HP)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%$search%")
+                  ->orWhere('username', 'like', "%$search%")
+                  ->orWhere('no_hp', 'like', "%$search%");
+            });
+        }
+
+        // B. Filter Role
+        $query->when($request->filled('role'), function ($q) use ($request) {
+            $q->where('role', $request->role);
+        });
+
+        // 3. EKSEKUSI
+        $members = $query->orderBy('id', 'desc')
+                         ->paginate($perPage)
+                         ->appends($request->query());
+
+        return view('admin.member.index', compact('members', 'list_role'));
     }
 
     // 2. TAMPILKAN FORM TAMBAH
     public function create()
     {
         return view('admin.member.create');
+    }
+
+
+    // MENAMPILKAN DETAIL MEMBER & RIWAYATNYA
+    public function show($id)
+    {
+        // Ambil data member beserta relasi transaksi peminjaman
+        // Urutkan transaksi dari yang terbaru
+        $member = User::with(['transaksiPeminjaman' => function($query) {
+            $query->with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy'])
+                  ->orderBy('id', 'desc');
+        }])
+        ->whereIn('role', ['member', 'admin'])
+        ->findOrFail($id);
+
+        return view('admin.member.show', compact('member'));
     }
 
     // 3. PROSES SIMPAN MEMBER BARU
@@ -38,6 +79,7 @@ class AdminMemberController extends Controller
             'no_hp' => 'required|numeric',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
+            'role' => 'required|in:admin,member',
         ]);
 
         User::create([
@@ -45,7 +87,7 @@ class AdminMemberController extends Controller
             'no_hp' => $request->no_hp,
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role' => 'member', // Wajib set sebagai member
+            'role' => $request->role,
         ]);
 
         return redirect('/admin/members')->with('success', 'Akun member baru berhasil ditambahkan!');
@@ -54,14 +96,14 @@ class AdminMemberController extends Controller
     // 4. TAMPILKAN FORM EDIT
     public function edit($id)
     {
-        $member = User::where('role', 'member')->findOrFail($id);
+        $member = User::findOrFail($id);
         return view('admin.member.edit', compact('member'));
     }
 
     // 5. PROSES UPDATE MEMBER
     public function update(Request $request, $id)
     {
-        $member = User::where('role', 'member')->findOrFail($id);
+        $member = User::findOrFail($id);
 
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',

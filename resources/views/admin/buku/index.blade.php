@@ -23,6 +23,57 @@
     </div>
     @endif
 
+    {{-- Awal Form Filter --}}
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <form action="/admin/buku" method="GET">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Cari Judul, Penulis..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <select name="penulis" class="form-select" onchange="this.form.submit()">
+                            <option value="">Semua Penulis</option>
+                            @foreach($list_penulis as $p)
+                                <option value="{{ $p }}" {{ request('penulis') == $p ? 'selected' : '' }}>
+                                    {{ $p }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <select name="tahun_terbit" class="form-select" onchange="this.form.submit()">
+                            <option value="">Semua Tahun</option>
+                            @foreach($list_tahun as $t)
+                                <option value="{{ $t }}" {{ request('tahun_terbit') == $t ? 'selected' : '' }}>
+                                    {{ $t }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <select name="per_page" class="form-select" onchange="this.form.submit()">
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 Data</option>
+                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 Data</option>
+                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 Data</option>
+                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 Data</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <a href="/admin/buku" class="btn btn-secondary w-100">Reset</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body">
             <div class="table-responsive">
@@ -40,7 +91,7 @@
                     <tbody>
                         @forelse($buku as $index => $katalog)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $buku->firstItem() + $index }}</td>
                             <td class="fw-bold">{{ $katalog->judul_buku }}</td>
                             <td>
                                 <small>Penulis: {{ $katalog->penulis }}</small><br>
@@ -73,6 +124,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end mt-3">
+                    {{ $buku->withQueryString()->links() }}
+                </div>
             </div>
         </div>
     </div>
