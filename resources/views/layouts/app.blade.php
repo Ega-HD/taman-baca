@@ -32,6 +32,9 @@
                                 Halo, {{ Auth::user()->nama_lengkap }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                
+                                <li><a class="dropdown-item" href="/member/profile">Edit Profil Saya</a></li>
+                                
                                 @if(Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin')
                                     <li><a class="dropdown-item" href="/admin/dashboard">Panel Admin</a></li>
                                 @endif

@@ -40,6 +40,7 @@
                             <option value="Sedang Dipinjam" {{ request('status') == 'Sedang Dipinjam' ? 'selected' : '' }}>Sedang Dipinjam (Aktif)</option>
                             <option value="Menunggu Pengembalian" {{ request('status') == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian (Diajukan)</option>
                             <option value="Dikembalikan" {{ request('status') == 'Dikembalikan' ? 'selected' : '' }}>Selesai / Dikembalikan</option>
+                            <option value="Ditolak" class="text-danger fw-bold" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>❌ Ditolak</option>
                             <hr>
                             <option value="terlambat" class="fw-bold text-danger" {{ request('status') == 'terlambat' ? 'selected' : '' }}>⚠️ Terlambat (Jatuh Tempo)</option>
                             <option value="denda_belum_lunas" class="fw-bold text-warning" {{ request('status') == 'denda_belum_lunas' ? 'selected' : '' }}>💰 Denda Belum Lunas</option>

@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminTransaksiController;
 use App\Http\Controllers\AdminPengaturanController;
 use App\Http\Controllers\AdminMemberController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProfileController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
     Route::get('/', [HomeController::class, 'index']);
@@ -25,8 +26,8 @@ use App\Http\Controllers\RegisterController;
 
 
     Route::middleware(['auth', 'admin'])->group(function () {
-    // ... route admin lainnya ...
                 // ADMIN
+            // Route untuk Admin Dashboard
          Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
 
             // Kelola Buku
@@ -72,12 +73,14 @@ use App\Http\Controllers\RegisterController;
 
     });
 
-// Route untuk Admin Dashboard
 // Area Authenticated (Harus login dulu)
     Route::middleware('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         
                 // MEMBER
+        // Edit Profil Sendiri
+        Route::get('/member/profile', [ProfileController::class, 'edit']);
+        Route::put('/member/profile', [ProfileController::class, 'update']);
 
         // Route khusus Member (member)
         Route::get('/member/peminjaman', [PeminjamanController::class, 'index']);
