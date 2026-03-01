@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             // Enum untuk hak akses
-            $table->enum('role', ['admin', 'pengunjung'])->default('pengunjung');
+            $table->enum('role', ['admin', 'member'])->default('member');
             $table->string('username')->unique();
             $table->string('password');
             $table->string('nama_lengkap');

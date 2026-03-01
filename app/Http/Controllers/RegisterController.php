@@ -32,7 +32,7 @@ class RegisterController extends Controller
             'username' => $request->username,
             'no_hp' => $request->no_hp,
             'password' => Hash::make($request->password), // Password wajib di-hash/enkripsi
-            'role' => 'pengunjung', // Default role otomatis jadi pengunjung
+            'role' => 'member', // Default role otomatis jadi member
         ]);
 
         // 3. Redirect ke halaman login dengan pesan sukses

@@ -27,11 +27,11 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Arahkan berdasarkan role (hak akses)
-            if (Auth::user()->role == 'admin' || Auth::user()->role == 'super_admin') {
+            if (Auth::user()->role == 'admin') {
                 return redirect()->intended('/admin/dashboard');
             }
 
-            // Jika yang login adalah pengunjung biasa
+            // Jika yang login adalah member biasa
             return redirect()->intended('/');
         }
 

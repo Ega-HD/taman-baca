@@ -13,10 +13,10 @@ class AdminDashboardController extends Controller
     {
         // Menghitung ringkasan data
         $totalKatalog = Buku::count();
-        $totalPengunjung = User::where('role', 'pengunjung')->count();
+        $totalmember = User::where('role', 'member')->count();
         $bukuDipinjam = TransaksiPeminjaman::where('status', 'Sedang Dipinjam')->count();
 
         // Mengirim data ke view admin/dashboard
-        return view('admin.dashboard', compact('totalKatalog', 'totalPengunjung', 'bukuDipinjam'));
+        return view('admin.dashboard', compact('totalKatalog', 'totalmember', 'bukuDipinjam'));
     }
 }

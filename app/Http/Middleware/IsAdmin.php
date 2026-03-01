@@ -22,7 +22,7 @@ class IsAdmin
             return $next($request); // Silakan masuk
         }
 
-        // 3. Jika bukan admin (misal: pengunjung), tendang ke beranda
+        // 3. Jika bukan admin (misal: member), tendang ke beranda
         return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman Administrator.');
     }
 }

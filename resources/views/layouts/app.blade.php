@@ -36,7 +36,7 @@
                                     <li><a class="dropdown-item" href="/admin/dashboard">Panel Admin</a></li>
                                 @endif
                                 
-                                @if(Auth::user()->role == 'pengunjung')
+                                @if(Auth::user()->role == 'member')
                                     <li><a class="dropdown-item" href="/member/peminjaman">Buku Saya (Peminjaman)</a></li>
                                 @endif
                                 

@@ -18,7 +18,7 @@
             <div class="card text-white bg-success shadow-sm border-0 rounded-3">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-people"></i> Member Terdaftar</h5>
-                    <h1 class="display-5 fw-bold">{{ $totalPengunjung }}</h1>
+                    <h1 class="display-5 fw-bold">{{ $totalmember }}</h1>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 <div class="card-body">
                     <h5 class="card-title fw-bold">Selamat Datang di Panel Admin!</h5>
                     <p class="card-text text-muted">
-                        Gunakan menu navigasi di sebelah kiri untuk mengelola inventaris buku, mencatat donasi masuk, memproses transaksi peminjaman dan pengembalian, serta mengelola data pengunjung PAUD Terpadu Assyfa.
+                        Gunakan menu navigasi di sebelah kiri untuk mengelola inventaris buku, mencatat donasi masuk, memproses transaksi peminjaman dan pengembalian, serta mengelola data member PAUD Terpadu Assyfa.
                     </p>
                 </div>
             </div>

@@ -18,28 +18,28 @@
                     <hr class="w-100 bg-light">
                     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
                         <li class="nav-item w-100 mb-2">
-                            <a href="/admin/dashboard" class="nav-link px-0 align-middle text-white active">
+                            <a href="/admin/dashboard" class="nav-link px-0 align-middle text-white {{ Request::is('admin/dashboard*') ? 'active' : '' }}">
                                 <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="/admin/buku" class="nav-link px-0 align-middle text-white">
+                            <a href="/admin/buku" class="nav-link px-0 align-middle text-white {{ Request::is('admin/buku*') ? 'active bg-secondary' : '' }}">
                                 <i class="fs-4 bi-book"></i> <span class="ms-1 d-none d-sm-inline">Kelola Buku</span>
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="/admin/transaksi" class="nav-link px-0 align-middle text-white">
+                            <a href="/admin/transaksi" class="nav-link px-0 align-middle text-white {{ Request::is('admin/transaksi*') ? 'active bg-secondary' : '' }}">
                                 <i class="fs-4 bi-arrow-left-right"></i> <span class="ms-1 d-none d-sm-inline">Transaksi</span>
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="/admin/pengaturan" class="nav-link px-0 align-middle text-white">
+                            <a href="/admin/pengaturan" class="nav-link px-0 align-middle text-white {{ Request::is('admin/pengaturan*') ? 'active bg-secondary' : '' }}">
                                 <i class="fs-4 bi-box2-heart"></i> <span class="ms-1 d-none d-sm-inline">Tarif Denda</span>
                             </a>
                         </li>
                         <li class="nav-item w-100 mb-2">
-                            <a href="#" class="nav-link px-0 align-middle text-white">
-                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Pengunjung</span>
+                            <a href="/admin/members" class="nav-link px-0 align-middle text-white {{ Request::is('admin/members*') ? 'active bg-secondary' : '' }}">
+                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Member</span>
                             </a>
                         </li>
                     </ul>

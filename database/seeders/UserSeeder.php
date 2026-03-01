@@ -29,9 +29,9 @@ class UserSeeder extends Seeder
             'no_hp' => '081234567891',
         ]);
 
-        // 3. Akun Pengunjung (Member)
+        // 3. Akun member (Member)
         User::create([
-            'role' => 'pengunjung',
+            'role' => 'member',
             'username' => 'p',
             'password' => Hash::make('password123'),
             'nama_lengkap' => 'Siswa Assyfa',

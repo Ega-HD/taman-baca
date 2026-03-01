@@ -38,7 +38,7 @@
                 </p>
 
                 @auth
-                    @if(Auth::user()->role == 'pengunjung')
+                    @if(Auth::user()->role == 'member')
                         <div class="mt-3">
                             @if($stokTersedia > 0)
                                 <span class="badge bg-success mb-2">Tersedia</span>
@@ -51,7 +51,7 @@
                 </div>
 
             @auth
-                @if(Auth::user()->role == 'pengunjung')
+                @if(Auth::user()->role == 'member')
                     <div class="card-footer bg-white border-0 pb-3">
                         @if($stokTersedia > 0)
                             <form action="/member/pinjam/{{ $katalog->id }}" method="POST">

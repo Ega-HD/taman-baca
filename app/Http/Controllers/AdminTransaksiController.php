@@ -107,7 +107,7 @@ class AdminTransaksiController extends Controller
             // Buat pesan dinamis, apakah ada denda atau tidak
             $pesan = 'Buku berhasil dikembalikan.';
             if ($total_denda > 0) {
-                $pesan .= ' Pengunjung terlambat ' . $hari_telat . ' hari dan dikenakan denda Rp ' . number_format($total_denda, 0, ',', '.');
+                $pesan .= ' member terlambat ' . $hari_telat . ' hari dan dikenakan denda Rp ' . number_format($total_denda, 0, ',', '.');
             }
 
             return back()->with('success', $pesan);

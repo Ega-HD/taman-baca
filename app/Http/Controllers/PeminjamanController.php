@@ -28,9 +28,9 @@ class PeminjamanController extends Controller
     // Memproses klik tombol pinjam dari Beranda
     public function store(Request $request, $katalog_id)
     {
-        // 1. Pastikan user yang meminjam adalah role 'pengunjung'
-        if (Auth::user()->role !== 'pengunjung') {
-            return back()->with('error', 'Hanya akun pengunjung/member yang dapat meminjam buku.');
+        // 1. Pastikan user yang meminjam adalah role 'member'
+        if (Auth::user()->role !== 'member') {
+            return back()->with('error', 'Hanya akun member/member yang dapat meminjam buku.');
         }
 
         DB::beginTransaction();

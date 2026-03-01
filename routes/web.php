@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminBukuController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AdminTransaksiController;
 use App\Http\Controllers\AdminPengaturanController;
+use App\Http\Controllers\AdminMemberController;
 use App\Http\Controllers\RegisterController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
@@ -60,6 +61,10 @@ use App\Http\Controllers\RegisterController;
 
         // 3. Hapus Item Fisik Spesifik
         Route::delete('/admin/item-buku/{id}', [AdminBukuController::class, 'destroyFisik']);
+
+        // Route Kelola Member 
+        Route::resource('/admin/members', AdminMemberController::class);
+
     });
 
 // Route untuk Admin Dashboard
@@ -69,7 +74,7 @@ use App\Http\Controllers\RegisterController;
         
                 // MEMBER
 
-        // Route khusus Member (Pengunjung)
+        // Route khusus Member (member)
         Route::get('/member/peminjaman', [PeminjamanController::class, 'index']);
         Route::post('/member/pinjam/{katalog_id}', [PeminjamanController::class, 'store']);
         Route::post('/member/peminjaman/{id}/ajukan-kembali', [PeminjamanController::class, 'ajukanKembali']);
