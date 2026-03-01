@@ -79,31 +79,22 @@ class AdminTransaksiController extends Controller
             $total_denda = $hari_telat * $tarif_denda;
         }
 
+        $tgl_pengajuan_kembali_fix = $transaksi->tgl_pengajuan_kembali;
+        if (empty($tgl_pengajuan_kembali_fix)) {
+            $tgl_pengajuan_kembali_fix = $tgl_kembali_aktual;
+        }
         
         DB::beginTransaction();
         try {
-
-            if ($transaksi->tgl_pengajuan_kembali) {
-                $transaksi->update([
-                    'tgl_kembali' => $tgl_kembali_aktual,
-                    'hari_telat' => $hari_telat,
-                    // 'tarif_denda_berlaku' => $tarif_denda,
-                    'admin_pengembalian_id' => Auth::id(),
-                    'total_denda' => $total_denda,
-                    'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
-                ]);
-            }
-            else {
-                $transaksi->update([
-                    'tgl_pengajuan_kembali' => Carbon::now(),
-                    'tgl_kembali' => $tgl_kembali_aktual,
-                    'hari_telat' => $hari_telat,
-                    // 'tarif_denda_berlaku' => $tarif_denda,
-                    'admin_pengembalian_id' => Auth::id(),
-                    'total_denda' => $total_denda,
-                    'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
-                ]);
-            }
+            $transaksi->update([
+                'tgl_pengajuan_kembali' => $tgl_pengajuan_kembali_fix,
+                'tgl_kembali' => $tgl_kembali_aktual,
+                'hari_telat' => $hari_telat,
+                // 'tarif_denda_berlaku' => $tarif_denda,
+                'admin_pengembalian_id' => Auth::id(),
+                'total_denda' => $total_denda,
+                'status' => 'Dikembalikan' // Transaksi dianggap selesai, denda dicatat
+            ]);
             // 1. Update data transaksi
 
             // 2. Bebaskan fisik buku agar statusnya kembali 'Tersedia'

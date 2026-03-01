@@ -12,6 +12,7 @@ use App\Http\Controllers\RegisterController;
 
 // Arahkan halaman utama (/) ke method index di HomeController
     Route::get('/', [HomeController::class, 'index']);
+
 // Area Guest (Hanya bisa diakses jika belum login)
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -21,16 +22,11 @@ use App\Http\Controllers\RegisterController;
         Route::post('/register', [RegisterController::class, 'register']);
     });
 
-// Route untuk Admin Dashboard
-// Area Authenticated (Harus login dulu)
-    Route::middleware('auth')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        
-                // ADMIN
 
-        // Nanti kita bisa tambahkan middleware khusus admin di sini, 
-        // tapi untuk sekarang kita amankan dengan middleware 'auth' dulu
-        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
+    Route::middleware(['auth', 'admin'])->group(function () {
+    // ... route admin lainnya ...
+                // ADMIN
+         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
 
             // Kelola Buku
         Route::get('/admin/buku', [AdminBukuController::class, 'index']);
@@ -55,6 +51,22 @@ use App\Http\Controllers\RegisterController;
         Route::post('/admin/pengaturan', [AdminPengaturanController::class, 'update']);
         
 
+        // 1. Edit & Update Katalog Buku
+        Route::get('/admin/buku/{id}/edit', [AdminBukuController::class, 'edit']);
+        Route::put('/admin/buku/{id}', [AdminBukuController::class, 'update']);
+        
+        // 2. Hapus Katalog (Beserta semua isinya)
+        Route::delete('/admin/buku/{id}', [AdminBukuController::class, 'destroy']);
+
+        // 3. Hapus Item Fisik Spesifik
+        Route::delete('/admin/item-buku/{id}', [AdminBukuController::class, 'destroyFisik']);
+    });
+
+// Route untuk Admin Dashboard
+// Area Authenticated (Harus login dulu)
+    Route::middleware('auth')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        
                 // MEMBER
 
         // Route khusus Member (Pengunjung)

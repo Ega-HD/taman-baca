@@ -152,4 +152,69 @@ class AdminBukuController extends Controller
             return back()->withErrors(['error' => 'Gagal menambah buku fisik: ' . $e->getMessage()]);
         }
     }
+
+    // MENAMPILKAN FORM EDIT KATALOG
+    public function edit($id)
+    {
+        $buku = Buku::findOrFail($id);
+        return view('admin.buku.edit', compact('buku'));
+    }
+
+    // MEMPROSES UPDATE KATALOG
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'judul_buku' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'penerbit' => 'required|string|max:255',
+            'tahun_terbit' => 'required|numeric',
+        ]);
+
+        $buku = Buku::findOrFail($id);
+        
+        $buku->update([
+            'judul_buku' => $request->judul_buku,
+            'penulis' => $request->penulis,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+        ]);
+
+        return redirect('/admin/buku')->with('success', 'Data katalog buku berhasil diperbarui!');
+    }
+
+    // MENGHAPUS KATALOG (HATI-HATI: INI AKAN MENGHAPUS SEMUA FISIK & TRANSAKSI)
+    public function destroy($id)
+    {
+        $buku = Buku::with('itemBuku')->findOrFail($id);
+
+        // Cek apakah ada buku fisik yang sedang dipinjam?
+        $sedangDipinjam = $buku->itemBuku->whereIn('status_buku', ['Dipinjam', 'Di-booking'])->count();
+
+        if ($sedangDipinjam > 0) {
+            return back()->withErrors(['error' => 'Gagal menghapus! Masih ada ' . $sedangDipinjam . ' salinan fisik dari buku ini yang sedang dipinjam member.']);
+        }
+
+        // Jika aman, hapus katalog (Item fisik & Transaksi akan terhapus otomatis karena onCascadeDelete di migration)
+        $buku->delete();
+
+        return redirect('/admin/buku')->with('success', 'Katalog buku beserta seluruh salinan fisiknya berhasil dihapus.');
+    }
+
+    // MENGHAPUS SALAH SATU ITEM FISIK
+    public function destroyFisik($id)
+    {
+        $item = ItemBuku::findOrFail($id);
+
+        // Validasi: Jangan hapus jika sedang dipinjam
+        if ($item->status_buku !== 'Tersedia') {
+            return back()->withErrors(['error' => 'Gagal menghapus! Buku fisik dengan kode ' . $item->kode_buku . ' sedang dipinjam atau dibooking.']);
+        }
+
+        $item->delete();
+
+        return back()->with('success', 'Salinan fisik dengan kode ' . $item->kode_buku . ' berhasil dihapus.');
+    }
+
+    
+
 }

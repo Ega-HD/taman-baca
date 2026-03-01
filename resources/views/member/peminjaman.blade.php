@@ -92,7 +92,9 @@
 
                         {{-- Diterima Kembali --}}
                         <td>
-                            @if($item->status == 'Menunggu Pengembalian')
+                            @if($item->status == 'Menunggu Persetujuan' || $item->status == 'Sedang Dipinjam')
+                                <span> - </span>
+                            @elseif($item->status == 'Menunggu Pengembalian')
                                 <small class="text-muted fst-italic">Menunggu Admin</small>
                             @elseif($item->status == 'Dikembalikan')
                                 <span class="fw-bold">{{ $item->adminPengembalian->nama_lengkap ?? '-' }}</span><br>
@@ -150,7 +152,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-5">
+                        <td colspan="7" class="text-center text-muted py-5">
                             Anda belum memiliki riwayat peminjaman buku. <br>
                             <a href="/" class="btn btn-outline-primary mt-3">Mulai Cari Buku</a>
                         </td>

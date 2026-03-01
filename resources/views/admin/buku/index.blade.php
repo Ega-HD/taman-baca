@@ -15,6 +15,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    @if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{ $errors->first('error') }} 
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body">
@@ -51,11 +58,11 @@
                             </td>
                             <td>
                                 <a href="/admin/buku/{{ $katalog->id }}" class="btn btn-sm btn-info text-white mb-1" title="Lihat Daftar Kode Buku Fisik"><i class="bi bi-eye"></i></a>
-                                <a href="#" class="btn btn-sm btn-warning mb-1"><i class="bi bi-pencil"></i></a>
-                                <form action="#" method="POST" class="d-inline">
+                                <a href="/admin/buku/{{ $katalog->id }}/edit" class="btn btn-sm btn-warning mb-1"><i class="bi bi-pencil"></i></a>
+                                <form action="/admin/buku/{{ $katalog->id }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger mb-1" onclick="return confirm('Menghapus katalog ini akan menghapus semua salinan fisik bukunya. Lanjutkan?')"><i class="bi bi-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-danger mb-1" onclick="return confirm('PERINGATAN KERAS:\nMenghapus katalog ini akan menghapus SEMUA {{ $katalog->itemBuku->count() }} salinan fisik dan riwayat peminjamannya.\n\nApakah Anda yakin?')"><i class="bi bi-trash"></i></button>
                                 </form>
                             </td>
                         </tr>

@@ -62,7 +62,18 @@
                             </td>
                             <td>{{ \Carbon\Carbon::parse($item->tgl_ditambahkan)->format('d M Y') }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                @if($item->status_buku == 'Tersedia')
+                                    <form action="/admin/item-buku/{{ $item->id }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('Hapus salinan fisik dengan kode {{ $item->kode_buku }}? Data tidak bisa dikembalikan.')">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                @else
+                                    <button class="btn btn-sm btn-secondary" disabled title="Sedang dipinjam"><i class="bi bi-trash"></i></button>
+                                @endif
                             </td>
                         </tr>
                         @empty
