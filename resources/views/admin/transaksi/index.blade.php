@@ -240,9 +240,12 @@
                                     </form>
                                 @endif
 
-                                <button type="button" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </button>
+                                @if($item->status != 'Menunggu Persetujuan')
+                                    <button type="button" class="btn btn-sm btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                @endif
+
                                     {{-- Modal Edit Form --}}
                                 <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1">
                                     <div class="modal-dialog">
