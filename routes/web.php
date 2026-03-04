@@ -24,22 +24,34 @@ use App\Http\Controllers\ProfileController;
         Route::post('/register', [RegisterController::class, 'register']);
     });
 
-
+    
     Route::middleware(['auth', 'admin'])->group(function () {
-                // ADMIN
-            // Route untuk Admin Dashboard
-         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
-
-            // Kelola Buku
+        // ADMIN
+        // Route untuk Admin Dashboard
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']);
+        
+        // Kelola Buku
         Route::get('/admin/buku', [AdminBukuController::class, 'index']);
         Route::get('/admin/buku/create', [AdminBukuController::class, 'create']);
         Route::post('/admin/buku', [AdminBukuController::class, 'store']);
         
-            // Kelola Buku Fisik
+        Route::get('/admin/pengaturan', [AdminPengaturanController::class, 'index']);
+        Route::post('/admin/pengaturan', [AdminPengaturanController::class, 'update']);
+        
+        // 1. Edit & Update Katalog Buku
+        Route::get('/admin/buku/{id}/edit', [AdminBukuController::class, 'edit']);
+        Route::put('/admin/buku/{id}', [AdminBukuController::class, 'update']);
+        
+        // 2. Hapus Katalog (Beserta semua isinya)
+        Route::delete('/admin/buku/{id}', [AdminBukuController::class, 'destroy']);
+    
+        // Kelola Buku Fisik
         // Menampilkan detail katalog dan daftar fisik buku
         Route::get('/admin/buku/{id}', [AdminBukuController::class, 'show']);
         // Memproses penambahan fisik buku ke katalog yang sudah ada
         Route::post('/admin/buku/{id}/tambah-fisik', [AdminBukuController::class, 'storeFisik']);
+        // 3. Hapus Item Fisik Spesifik
+        Route::delete('/admin/item-buku/{id}', [AdminBukuController::class, 'destroyFisik']);
 
             // Kelola Transaksi (Peminjaman & Pengembalian)
         Route::get('/admin/transaksi', [AdminTransaksiController::class, 'index']);
@@ -54,19 +66,6 @@ use App\Http\Controllers\ProfileController;
         
 
             // Pengaturan Denda
-        Route::get('/admin/pengaturan', [AdminPengaturanController::class, 'index']);
-        Route::post('/admin/pengaturan', [AdminPengaturanController::class, 'update']);
-        
-
-        // 1. Edit & Update Katalog Buku
-        Route::get('/admin/buku/{id}/edit', [AdminBukuController::class, 'edit']);
-        Route::put('/admin/buku/{id}', [AdminBukuController::class, 'update']);
-        
-        // 2. Hapus Katalog (Beserta semua isinya)
-        Route::delete('/admin/buku/{id}', [AdminBukuController::class, 'destroy']);
-
-        // 3. Hapus Item Fisik Spesifik
-        Route::delete('/admin/item-buku/{id}', [AdminBukuController::class, 'destroyFisik']);
 
         // Route Kelola Member 
         Route::resource('/admin/members', AdminMemberController::class);
