@@ -46,6 +46,18 @@ class AdminTransaksiController extends Controller
             });
         }
 
+        if ($request->filled('search_buku')) {
+            $search_buku = $request->search_buku;
+            $query->where(function($q) use ($search_buku) {
+                $q->WhereHas('itemBuku', function($b) use ($search_buku) {
+                    $b->where('kode_buku', 'like', "%$search_buku%")
+                      ->orWhereHas('buku', function($k) use ($search_buku) {
+                          $k->where('judul_buku', 'like', "%$search_buku%");
+                      });
+                });
+            });
+        }
+
         // 2. FILTER STATUS & KONDISI
         if ($request->filled('status')) {
             if ($request->status == 'terlambat') {

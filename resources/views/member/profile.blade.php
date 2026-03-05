@@ -9,13 +9,19 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-            @if($errors->any())
+            {{-- @if($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
+                </div>
+            @endif --}}
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
@@ -71,10 +77,23 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
+                                <label class="form-label fw-bold">Password Lama</label>
+                                <input type="password" name="old_password" class="form-control">
+
+                                @error('old_password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-bold">Password Baru</label>
-                                <input type="password" name="password" class="form-control" placeholder="Minimal 6 karakter">
+                                <input type="password" name="new_password" class="form-control" placeholder="Minimal 6 karakter">
                                 
-                                @error('password')
+                                @error('new_password')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -83,7 +102,7 @@
                             
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Ulangi Password Baru</label>
-                                <input type="password" name="password_confirmation" class="form-control">
+                                <input type="password" name="new_password_confirmation" class="form-control">
                             </div>
                         </div>
 

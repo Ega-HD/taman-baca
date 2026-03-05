@@ -111,7 +111,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="text-center text-muted">Belum ada data member.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted">Belum ada data member.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

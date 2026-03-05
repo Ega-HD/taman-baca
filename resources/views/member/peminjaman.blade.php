@@ -15,6 +15,51 @@
     </div>
 @endif
 
+{{-- Awal Form Filter --}}
+<div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card-body">
+        <form action="/member/peminjaman" method="GET">
+            <div class="row g-3">
+                {{-- Search Bar --}}
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Cari Judul Buku, atau Kode..." value="{{ request('search') }}">
+                    </div>
+                </div>
+
+                {{-- Filter Status Transaksi --}}
+                <div class="col-md-3">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Semua Status</option>
+                        <option value="Menunggu Persetujuan" {{ request('status') == 'Menunggu Persetujuan' ? 'selected' : '' }}>Menunggu Persetujuan Pinjam</option>
+                        <option value="Sedang Dipinjam" {{ request('status') == 'Sedang Dipinjam' ? 'selected' : '' }}>Sedang Dipinjam (Aktif)</option>
+                        <option value="Menunggu Pengembalian" {{ request('status') == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian (Diajukan)</option>
+                        <option value="Dikembalikan" {{ request('status') == 'Dikembalikan' ? 'selected' : '' }}>Selesai / Dikembalikan</option>
+                        <option value="Ditolak" class="text-danger fw-bold" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>❌ Ditolak</option>
+                        <hr>
+                        <option value="terlambat" class="fw-bold text-danger" {{ request('status') == 'terlambat' ? 'selected' : '' }}>⚠️ Terlambat (Jatuh Tempo)</option>
+                        <option value="denda_belum_lunas" class="fw-bold text-warning" {{ request('status') == 'denda_belum_lunas' ? 'selected' : '' }}>💰 Denda Belum Lunas</option>
+                    </select>
+                </div>
+
+                {{-- Dropdown jumlah data per page --}}
+                <div class="col-md-2">
+                    <select name="per_page" class="form-select" onchange="this.form.submit()">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10 Data</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 Data</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 Data</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 Data</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <a href="/member/peminjaman" class="btn btn-secondary w-100">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card shadow-sm border-0 rounded-3">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -65,24 +110,25 @@
 
                         {{-- Riwayat Waktu --}}
                         <td>
+                            {{-- Menunggu Persetujuan --}}
                             <small class="text-muted d-block">Diajukan pinjam: {{ \Carbon\Carbon::parse($item->tgl_pengajuan_pinjam)->format('d M Y, H:i') }} WIB</small>
                             @if ($item->status == 'Ditolak')
                                 <span class="badge bg-danger">Ditolak </span>
-                                <small class="text-muted">: {{ \Carbon\Carbon::parse($item->tgl_ditolak)->format('d/m/y H:i') }} WIB</small><br>
-                            @endif
-                            @if($item->status != 'Menunggu Persetujuan')
+                                <small class="text-muted">: {{ \Carbon\Carbon::parse($item->tgl_ditolak)->format('d M Y, H:i') }} WIB</small><br>
+                            {{-- Sedang Dipinjam --}}
+                            @elseif($item->status != 'Menunggu Persetujuan' || $item->status != 'Ditolak')
                                 <small class="text-success d-block">Dipinjam: {{ \Carbon\Carbon::parse($item->tgl_pinjam)->format('d M Y, H:i') }} WIB</small>
-                                @if($item->status != 'Dipinjam')
+                                {{-- Dikembalikan --}}
+                                @if($item->status != 'Sedang Dipinjam')
                                     <small class="mt-2 text-primary small">
                                         Diajukan kembali:
                                         {{ \Carbon\Carbon::parse($item->tgl_pengajuan_pengembalian)->format('d M Y, H:i') }} WIB
                                     </small>
+                                    @if($item->status != 'Menunggu Pengembalian')
+                                        <small class="text-primary fw-bold d-block mt-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
+                                    @endif
                                 @endif
-                                @if($item->status != 'Dikembalikan')
-                                    <small class="text-danger fw-bold d-block mt-1">Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</small>
-                                @else
-                                    <small class="text-primary fw-bold d-block mt-1">Kembali: {{ \Carbon\Carbon::parse($item->tgl_kembali)->format('d M Y') }}</small>
-                                @endif
+                                <small class="text-danger fw-bold d-block mt-1">Deadline: {{ \Carbon\Carbon::parse($item->deadline)->format('d M Y') }}</small>
                             @endif
                         </td>
                             
@@ -175,7 +221,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-5">
+                        <td colspan="8" class="text-center text-muted py-5">
                             Anda belum memiliki riwayat peminjaman buku. <br>
                             <a href="/" class="btn btn-outline-primary mt-3">Mulai Cari Buku</a>
                         </td>
@@ -183,6 +229,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-3">
+                {{ $transaksi->withQueryString()->links() }}
+            </div>
         </div>
     </div>
 </div>

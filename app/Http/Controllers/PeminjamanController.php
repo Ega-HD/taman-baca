@@ -14,15 +14,60 @@ use Carbon\Carbon;
 class PeminjamanController extends Controller
 {
     // Menampilkan halaman daftar buku yang sedang dipinjam oleh user yang login
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
-        $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy', 'updatedBy'])
-                        ->where('user_id', Auth::id())
-                        ->orderBy('id', 'desc')
-                        ->get();
-                        
+        $perPage = $request->input('per_page', 10);
+        // Mulai Query
+        $query = TransaksiPeminjaman::with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy', 'updatedBy'])
+                    ->where('user_id', Auth::id())
+                    ->orderBy('id', 'desc');
+
+        // 1. FILTER PENCARIAN (Nama Member / Judul Buku / Kode Buku)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->WhereHas('itemBuku', function($b) use ($search) {
+                    $b->where('kode_buku', 'like', "%$search%")
+                      ->orWhereHas('buku', function($k) use ($search) {
+                          $k->where('judul_buku', 'like', "%$search%");
+                      });
+                });
+            });
+        }
+
+        // 2. FILTER STATUS & KONDISI
+        if ($request->filled('status')) {
+            if ($request->status == 'terlambat') {
+                // Logika Khusus: Cari yang deadline-nya sudah lewat DAN belum dikembalikan
+                $query->whereIn('status', ['Sedang Dipinjam', 'Menunggu Pengembalian'])
+                      ->whereDate('deadline', '<', Carbon::now());
+            } 
+            elseif ($request->status == 'denda_belum_lunas') {
+                // Logika Khusus: Sudah kembali TAPI denda > 0 DAN tgl_pelunasan kosong
+                $query->where('status', 'Dikembalikan')
+                      ->where('total_denda', '>', 0)
+                      ->whereNull('tgl_pelunasan');
+            }
+            else {
+                // Filter status standar (Enum)
+                $query->where('status', $request->status);
+            }
+        }
+
+        // Eksekusi
+        // $transaksi = $query->paginate(10); // Gunakan paginate agar halaman tidak berat
+
+        $transaksi = $query->paginate($perPage)->appends($request->query());
+
         return view('member.peminjaman', compact('transaksi'));
+        
+        // // Ambil data transaksi milik user ini saja, beserta relasi ke fisik buku dan katalognya
+        // $transaksi = TransaksiPeminjaman::with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy', 'updatedBy'])
+        // ->where('user_id', Auth::id())
+        // ->orderBy('id', 'desc')
+        // ->get();
+        
+        // return view('admin.transaksi.index', compact('transaksi'));
     }
 
     // Memproses klik tombol pinjam dari Beranda

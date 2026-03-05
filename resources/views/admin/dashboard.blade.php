@@ -48,7 +48,7 @@
                 <div class="card-body">
                     <h5 class="card-title fw-bold">Selamat Datang di Panel Admin!</h5>
                     <p class="card-text text-muted">
-                        Gunakan menu navigasi di sebelah kiri untuk mengelola inventaris buku, mencatat donasi masuk, memproses transaksi peminjaman dan pengembalian, serta mengelola data member PAUD Terpadu Assyfa.
+                        Gunakan menu navigasi di sebelah kiri untuk mengelola inventaris buku, memproses transaksi peminjaman dan pengembalian, mengubah tarif denda, serta mengelola data member PAUD Terpadu Assyfa.
                     </p>
                 </div>
             </div>

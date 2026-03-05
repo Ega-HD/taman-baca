@@ -26,10 +26,12 @@
             <form action="/admin/transaksi" method="GET">
                 <div class="row g-3">
                     {{-- Search Bar --}}
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Cari Nama Member, Judul Buku, atau Kode..." value="{{ request('search') }}">
+                            <input type="text" name="search" class="form-control" placeholder="Cari Nama Member, Judul, Kode..." value="{{ request('search') }}">
+                            <input type="text" name="search_buku" class="form-control" placeholder="Judul Buku, atau Kode..." value="{{ request('search_buku') }}">
+                            <button class="btn btn-primary" type="submit">Cari</button>
                         </div>
                     </div>
 
@@ -57,7 +59,7 @@
                             <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 Data</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <a href="/admin/transaksi" class="btn btn-secondary w-100">Reset</a>
                     </div>
                 </div>
@@ -285,7 +287,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-5">
+                            <td colspan="6" class="text-center text-muted py-5">
                                 <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                 Tidak ada antrean peminjaman buku saat ini.
                             </td>

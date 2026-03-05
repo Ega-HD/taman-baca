@@ -29,8 +29,30 @@ class ProfileController extends Controller
             'tempat_lahir' => 'nullable|string|max:100',
             'tgl_lahir'    => 'nullable|date',
             'alamat'       => 'nullable|string',
-            'password'     => 'nullable|string|min:6|confirmed', // confirmed butuh field password_confirmation
+            'old_password'     => 'nullable|string',
+            'new_password'     => 'nullable|string|min:6|confirmed', // confirmed butuh field password_confirmation
         ]);
+
+        if ($request->anyFilled(['old_password', 'new_password', 'new_password_confirmation']))
+            {
+                if($request->isNotFilled('old_password', 'new_password', 'new_password_confirmation'))
+                    {
+                        return redirect()->back()->with("error", "Isi semua password untuk ganti password baru");
+                    }
+                if ($request->filled('old_password') && $request->isNotFilled('new_password')) 
+                    {
+                        return redirect()->back()->with("error", "Required password lama dan juga password baru");
+                    }
+                if (!(Hash::check($request['old_password'], Auth::user()->password))) 
+                    {
+                        return redirect()->back()->with("error", "Password anda saat ini tidak cocok. Silakan coba lagi.");
+                    }
+        
+                if (strcmp($request['old_password'], $request['new_password']) == 0) 
+                    {
+                        return redirect()->back()->with("error", "Kata sandi baru tidak boleh sama dengan kata sandi anda saat ini. Harap pilih kata sandi yang berbeda.");
+                    }
+            }
 
         $dataUpdate = [
             'nama_lengkap' => $request->nama_lengkap,
@@ -42,8 +64,8 @@ class ProfileController extends Controller
             'alamat'       => $request->alamat,
         ];
 
-        if ($request->filled('password')) {
-            $dataUpdate['password'] = Hash::make($request->password);
+        if ($request->filled('new_password')) {
+            $dataUpdate['password'] = Hash::make($request->new_password);
         }
 
         // Kita gunakan Model User langsung agar intellisense jalan, atau $request->user()->update(...)
