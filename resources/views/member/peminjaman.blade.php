@@ -8,13 +8,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
 {{-- Awal Form Filter --}}
 <div class="card shadow-sm border-0 rounded-3 mb-4">
     <div class="card-body">
@@ -23,8 +16,9 @@
                 {{-- Search Bar --}}
                 <div class="col-md-5">
                     <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                        {{-- <span class="input-group-text bg-light"><i class="bi bi-search"></i></span> --}}
                         <input type="text" name="search" class="form-control" placeholder="Cari Judul Buku, atau Kode..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
                     </div>
                 </div>
 
@@ -80,7 +74,7 @@
                     @forelse($transaksi as $index => $item)
                     <tr>
                         {{-- No --}}
-                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $transaksi->firstItem() + $index }}</td>
 
                         {{-- Judul Buku --}}
                         <td class="ps-4">

@@ -44,19 +44,47 @@
                     <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history"></i> Riwayat Peminjaman Buku</h5>
                 </div>
                 <div class="card-body">
+
+                    <form action="{{ url()->current() }}" method="GET" class="row g-2 mb-3">
+                        <div class="col-md-5">
+                            <input type="text" name="search_riwayat" class="form-control" placeholder="Cari Judul / Kode Buku..." value="{{ request('search_riwayat') }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <select name="status_riwayat" class="form-select" onchange="this.form.submit()">
+                                <option value="">-- Semua Status --</option>
+                                <option value="Menunggu Persetujuan" {{ request('status_riwayat') == 'Menunggu Persetujuan' ? 'selected' : '' }}>Menunggu Persetujuan</option>
+                                <option value="Sedang Dipinjam" {{ request('status_riwayat') == 'Sedang Dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
+                                <option value="Menunggu Pengembalian" {{ request('status_riwayat') == 'Menunggu Pengembalian' ? 'selected' : '' }}>Menunggu Pengembalian</option>
+                                <option value="Dikembalikan" {{ request('status_riwayat') == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
+                                <option value="Ditolak" {{ request('status_riwayat') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Cari</button>
+                            @if(request()->has('search_riwayat') || request()->has('status_riwayat'))
+                                <a href="{{ url()->current() }}" class="btn btn-danger"><i class="bi bi-x-circle"></i></a>
+                            @endif
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
                                 <tr>
+                                    <th>No</th>
                                     <th>Buku</th>
                                     <th>Tgl Pinjam</th>
                                     <th>Status</th>
+                                    <th>Aksi</th>
                                     {{-- <th>Detail</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($member->transaksiPeminjaman as $item)
+                                @forelse($memberTransaksi as $index => $item)
                                 <tr>
+                                    <td>{{ $memberTransaksi->firstItem() + $index }}</td>
                                     <td>
                                         <span class="fw-bold text-primary">{{ $item->itemBuku->buku->judul_buku }}</span><br>
                                         <small class="text-muted">{{ $item->itemBuku->kode_buku }}</small>
@@ -80,6 +108,11 @@
                                         @endphp
                                         <span class="badge {{ $badgeClass }}">{{ $item->status }}</span>
                                     </td>
+                                    <td>
+                                        <a href="/admin/transaksi?id_transaksi={{ $item->id }}" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Lihat di Menu Transaksi">
+                                            <i class="bi bi-box-arrow-up-right"></i> Cek
+                                        </a>
+                                    </td>
                                     {{-- <td>
                                         @if($item->total_denda > 0)
                                             <span class="text-danger small fw-bold">Denda: Rp {{ number_format($item->total_denda) }}</span>
@@ -90,11 +123,14 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">Belum ada riwayat peminjaman.</td>
+                                    <td colspan="5" class="text-center text-muted py-4">Belum ada riwayat peminjaman.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
+                        <div class="d-flex justify-content-end mt-3">
+                            {{ $memberTransaksi->withQueryString()->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

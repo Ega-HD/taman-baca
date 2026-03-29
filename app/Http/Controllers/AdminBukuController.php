@@ -141,9 +141,14 @@ class AdminBukuController extends Controller
     public function show($id)
     {
         // Ambil data buku berdasarkan ID, sekalian bawa relasi item_buku-nya
-        $buku = Buku::with('itemBuku')->findOrFail($id);
+        $buku = Buku::findOrFail($id);
+        $itemBuku = $buku->itemBuku()
+                ->with(['transaksiPeminjaman' => function($query){
+                    $query->orderBy('id', 'desc');
+                }])
+                ->paginate(5);
         
-        return view('admin.buku.show', compact('buku'));
+        return view('admin.buku.show', compact('buku', 'itemBuku'));
     }
 
     // Memproses penambahan salinan fisik baru ke katalog existing

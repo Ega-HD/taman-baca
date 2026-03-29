@@ -4,10 +4,6 @@
 <div class="container-fluid px-4">
     <h3 class="mt-2 mb-4 fw-bold">Tambah Buku Baru</h3>
 
-    @if($errors->has('error'))
-        <div class="alert alert-danger">{{ $errors->first('error') }}</div>
-    @endif
-
     <div class="card shadow-sm border-0 rounded-3 mb-4">
         <div class="card-body p-4">
             <form action="/admin/buku" method="POST">

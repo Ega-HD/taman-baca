@@ -3,10 +3,6 @@
 @section('content')
 <div class="container-fluid px-4">
     <h3 class="fw-bold mt-2 mb-4">Pengaturan Sistem</h3>
-    
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
     <div class="card shadow-sm border-0 rounded-3 col-md-6">
         <div class="card-body">

@@ -12,16 +12,6 @@
         </button>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    @if($errors->has('error'))
-        <div class="alert alert-danger">{{ $errors->first('error') }}</div>
-    @endif
-
     <div class="card shadow-sm border-0 rounded-3 mb-4">
         <div class="card-body">
             <h4 class="fw-bold text-primary">{{ $buku->judul_buku }}</h4>
@@ -51,9 +41,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($buku->itemBuku as $index => $item)
+                        @forelse($itemBuku as $index => $item)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $itemBuku->firstItem() + $index }}</td>
                             <td><span class="badge bg-dark fs-6">{{ $item->kode_buku }}</span></td>
                             <td>
                                 <span class="badge {{ $item->status_buku == 'Tersedia' ? 'bg-success' : 'bg-warning text-dark' }}">
@@ -66,13 +56,25 @@
                                     <form action="/admin/item-buku/{{ $item->id }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
                                                 onclick="return confirm('Hapus salinan fisik dengan kode {{ $item->kode_buku }}? Data tidak bisa dikembalikan.')">
                                             <i class="bi bi-trash"></i> Hapus
                                         </button>
                                     </form>
                                 @else
-                                    <button class="btn btn-sm btn-secondary" disabled title="Sedang dipinjam"><i class="bi bi-trash"></i></button>
+                                    @php
+                                        $activeTransaksi = $item->transaksiPeminjaman->first();
+                                    @endphp
+                                    
+                                    @if($activeTransaksi)
+                                        <a href="/admin/transaksi?id_transaksi={{ $activeTransaksi->id }}" class="btn btn-sm btn-outline-info" title="Lihat Transaksi">
+                                            <i class="bi bi-box-arrow-up-right"></i> Cek
+                                        </a>
+                                    @endif
+
+                                    <button class="btn btn-sm btn-secondary" disabled title="Sedang dipinjam">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 @endif
                             </td>
                         </tr>
@@ -83,6 +85,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end mt-3">
+                    {{ $itemBuku->withQueryString()->links() }}
+                </div>
             </div>
         </div>
     </div>

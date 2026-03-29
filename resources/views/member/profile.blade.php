@@ -6,25 +6,6 @@
         <div class="col-md-8">
             <h3 class="fw-bold mb-4">Profil Saya</h3>
 
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-            {{-- @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif --}}
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-4">
                     <form action="/member/profile" method="POST">
@@ -79,12 +60,6 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Password Lama</label>
                                 <input type="password" name="old_password" class="form-control">
-
-                                @error('old_password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
                             </div>
                         </div>
 
@@ -92,12 +67,6 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Password Baru</label>
                                 <input type="password" name="new_password" class="form-control" placeholder="Minimal 6 karakter">
-                                
-                                @error('new_password')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
                             </div>
                             
                             <div class="col-md-6">

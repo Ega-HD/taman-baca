@@ -77,6 +77,10 @@ class AdminTransaksiController extends Controller
             }
         }
 
+        if ($request->filled('id_transaksi')) {
+            $query->where('id', $request->id_transaksi);
+        }
+
         // Eksekusi
         // $transaksi = $query->paginate(10); // Gunakan paginate agar halaman tidak berat
 
@@ -124,7 +128,7 @@ class AdminTransaksiController extends Controller
                 'tgl_disetujui' => Carbon::now(), // Kapan disetujui
                 'tgl_pinjam' => Carbon::now(), // Argo peminjaman dimulai
                 'tarif_denda_berlaku' => $tarifDenda,
-                'deadline' => Carbon::now()->addDays(-7), // Batas waktu 7 hari
+                'deadline' => Carbon::now()->addDays(7), // Batas waktu 7 hari
                 'status' => 'Sedang Dipinjam'
             ]);
 

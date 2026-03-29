@@ -9,20 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    @if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        {{ $errors->first('error') }} 
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
     {{-- Awal Form Filter --}}
     <div class="card shadow-sm border-0 rounded-3 mb-4">
         <div class="card-body">
@@ -30,8 +16,9 @@
                 <div class="row g-2">
                     <div class="col-md-3">
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            {{-- <span class="input-group-text bg-light"><i class="bi bi-search"></i></span> --}}
                             <input type="text" name="search" class="form-control" placeholder="Cari Judul, Penulis..." value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
                         </div>
                     </div>
 

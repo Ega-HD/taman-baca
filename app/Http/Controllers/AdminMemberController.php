@@ -57,18 +57,43 @@ class AdminMemberController extends Controller
 
 
     // MENAMPILKAN DETAIL MEMBER & RIWAYATNYA
-    public function show($id)
+    public function show(Request $request, $id)
     {
         // Ambil data member beserta relasi transaksi peminjaman
         // Urutkan transaksi dari yang terbaru
-        $member = User::with(['transaksiPeminjaman' => function($query) {
-            $query->with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy'])
-                  ->orderBy('id', 'desc');
-        }])
-        ->whereIn('role', ['member', 'admin'])
-        ->findOrFail($id);
+        // $member = User::with(['transaksiPeminjaman' => function($query) {
+        //     $query->with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy'])
+        //           ->orderBy('id', 'desc');
+        // }])
+        // // ->whereIn('role', ['member', 'admin'])
+        // ->findOrFail($id);
+        $member = User::findOrFail($id);
 
-        return view('admin.member.show', compact('member'));
+        // $memberTransaksi = $member->transaksiPeminjaman()
+        //             ->with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy'])
+        //             ->orderBy('id', 'desc')
+        //             ->paginate(5);
+        $query = $member->transaksiPeminjaman()
+                ->with(['itemBuku.buku', 'approvedBy', 'retrievedBy', 'rejectedBy'])
+                ->orderBy('id', 'desc');
+
+        if ($request->filled('search_riwayat')){
+            $search = $request->search_riwayat;
+            $query->whereHas('itemBuku', function($b) use ($search) {
+                $b->where('kode_buku', 'like', "%$search%")
+                ->orWhereHas('buku', function($k) use ($search) {
+                    $k->where('judul_buku', 'like', "%$search%");
+                });
+            });
+        }
+
+        if ($request->filled('status_riwayat')) {
+            $query->where('status', $request->status_riwayat);
+        }
+
+        $memberTransaksi = $query->paginate(5)->appends($request->query());
+
+        return view('admin.member.show', compact('member', 'memberTransaksi'));
     }
 
     // 3. PROSES SIMPAN MEMBER BARU

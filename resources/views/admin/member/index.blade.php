@@ -7,14 +7,6 @@
         <a href="/admin/members/create" class="btn btn-primary fw-bold"><i class="bi bi-person-plus"></i> Tambah Akun</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger">{{ $errors->first('error') }}</div>
-    @endif
-
-
     {{-- Awal Form Filter --}}
     <div class="card shadow-sm border-0 rounded-3 mb-4">
         <div class="card-body">
@@ -23,8 +15,9 @@
 
                     <div class="col-md-6">
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            {{-- <span class="input-group-text bg-light"><i class="bi bi-search"></i></span> --}}
                             <input type="text" name="search" class="form-control" placeholder="Cari Nama, Username, No HP..." value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
                         </div>
                     </div>
 

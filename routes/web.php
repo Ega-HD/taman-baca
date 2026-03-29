@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController; // Panggil Controller-nya
-use App\Http\Controllers\AdminDashboardController; // Tambahkan ini di atas
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminBukuController;
 use App\Http\Controllers\PeminjamanController;
