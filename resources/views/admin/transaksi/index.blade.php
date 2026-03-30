@@ -185,7 +185,7 @@
                                         </small>
                                         <div class="text-muted small fst-italic mt-1">(Tarif: Rp {{ number_format($item->tarif_denda_berlaku,0) }}/hari)</div>
 
-                                        @if($item->tgl_pelunasan) 
+                                        @if($item->tgl_pelunasan)
                                             <span class="text-success"><del>Rp {{ number_format($item->total_denda, 0, ',', '.') }}</del></span>
                                             <span class="badge bg-success"><i class="bi bi-check-circle"></i> Transaksi Selesai</span>
                                         @endif
@@ -220,11 +220,18 @@
                                         </button>
                                     </form>
                                 
-                                @elseif($item->status == 'Dikembalikan' && $item->total_denda > 0 && !$item->tgl_pelunasan)
+                                @elseif($item->status == 'Dikembalikan' && $item->total_denda > 0 && $item->hari_telat > 0 && !$item->tgl_pelunasan)
                                     <form action="/admin/transaksi/{{ $item->id }}/lunas" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-warning fw-bold w-100" onclick="return confirm('Konfirmasi pelunasan denda?')">
                                             <i class="bi bi-cash"></i> Lunasi Denda
+                                        </button>
+                                    </form>
+
+                                    <form action="/admin/transaksi/{{ $item->id }}/bebas-denda" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary fw-bold w-100" onclick="return confirm('Konfirmasi pembebasan denda (denda akan dianggap lunas/Rp 0)?')">
+                                            <i class="bi bi-eraser-fill"></i> Bebas Denda
                                         </button>
                                     </form>
                                 @endif

@@ -58,12 +58,12 @@ use App\Http\Controllers\ProfileController;
         Route::post('/admin/transaksi/{id}/setujui', [AdminTransaksiController::class, 'setujui']); // Route ACC
         Route::post('/admin/transaksi/{id}/kembali', [AdminTransaksiController::class, 'kembalikan']);
         Route::post('/admin/transaksi/{id}/lunas', [AdminTransaksiController::class, 'lunasi']);
+        Route::post('/admin/transaksi/{id}/bebas-denda', [AdminTransaksiController::class, 'bebasDenda']);
 
         // Fitur Tolak
         Route::post('/admin/transaksi/{id}/tolak', [AdminTransaksiController::class, 'tolak']);
         // Fitur Edit (Update)
         Route::put('/admin/transaksi/{id}', [AdminTransaksiController::class, 'update']);
-        
 
             // Pengaturan Denda
 

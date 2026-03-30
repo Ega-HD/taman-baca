@@ -26,6 +26,7 @@ class TransaksiPeminjaman extends Model
         'tgl_diupdate',
         'tgl_pinjam',
         'deadline',
+        'tgl_pengajuan_pengembalian',
         'tgl_kembali',
         'tgl_pelunasan',
 
