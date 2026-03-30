@@ -270,7 +270,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-warning fw-bold">Simpan Perubahan</button>
+                                                    <button type="submit" class="btn btn-warning fw-bold" onclick="return confirm('Konfirmasi mengedit data transaksi ini?')">Simpan Perubahan</button>
                                                 </div>
                                             </form>
                                         </div>

@@ -14,18 +14,18 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Nama Lengkap</label>
+                                <label class="form-label fw-bold">Nama Lengkap*</label>
                                 <input type="text" name="nama_lengkap" class="form-control" value="{{ $user->nama_lengkap }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Username</label>
+                                <label class="form-label fw-bold">Username*</label>
                                 <input type="text" name="username" class="form-control" value="{{ $user->username }}" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">No. HP (WA)</label>
+                                <label class="form-label fw-bold">No. HP (WA)*</label>
                                 <input type="text" name="no_hp" class="form-control" value="{{ $user->no_hp }}" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                             </div>
                             <div class="col-md-6">

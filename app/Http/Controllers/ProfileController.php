@@ -30,7 +30,7 @@ class ProfileController extends Controller
             'tgl_lahir'    => 'nullable|date',
             'alamat'       => 'nullable|string',
             'old_password'     => 'nullable|string',
-            'new_password'     => 'nullable|string|min:6|confirmed', // confirmed butuh field password_confirmation
+            'new_password'     => 'nullable|string|min:6|confirmed',
         ]);
 
         if ($request->anyFilled(['old_password', 'new_password', 'new_password_confirmation']))
@@ -45,7 +45,7 @@ class ProfileController extends Controller
                     }
                 if (!(Hash::check($request['old_password'], Auth::user()->password))) 
                     {
-                        return redirect()->back()->with("error", "Password anda saat ini tidak cocok. Silakan coba lagi.");
+                        return redirect()->back()->with("error", "Password lama anda saat ini tidak cocok. Silakan coba lagi.");
                     }
         
                 if (strcmp($request['old_password'], $request['new_password']) == 0) 

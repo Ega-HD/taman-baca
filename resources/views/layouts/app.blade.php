@@ -19,13 +19,20 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link active" href="/">Katalog Buku</a>
+                    </li> --}}
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="nav-link text-white fw-bold px-3 py-1 rounded-pill {{ Request::is('/') ? 'bg-white bg-opacity-25' : '' }}" href="/">
+                            <i class="bi bi-book-half me-1"></i> Katalog Buku
+                        </a>
                     </li>
                     
                     @guest
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light btn-sm px-3 ms-lg-2 mt-2 mt-lg-0" href="/login">Login</a>
+                            <a class="btn btn-light text-primary btn-sm px-4 fw-bold ms-lg-3 mt-2 mt-lg-0 rounded-pill shadow-sm" href="/login">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                            </a>
                         </li>
                     @else
 

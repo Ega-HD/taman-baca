@@ -14,7 +14,7 @@
                 <div class="row g-2">
                     <div class="col-md-3">
                         <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            <button type="submit" class="btn btn-secondary"><i class="bi bi-search"></i></button>
                             <input type="text" name="search" class="form-control" placeholder="Cari Judul, Penulis..." value="{{ request('search') }}">
                         </div>
                     </div>
